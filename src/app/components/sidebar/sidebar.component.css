@@ -1,0 +1,44 @@
+.sidebar {
+    height: 100%; /* Full height of content-container */
+    width: 240px;
+    flex-shrink: 0; /* Prevent shrinking */
+    overflow-y: auto; /* Scrollable if content is long */
+    /* Keep your existing sidebar styles */
+  }
+  .sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+  
+  .menu-item:hover {
+    background-color: #f5f5f5;
+    color: #6a35ff;
+  }
+  
+  .menu-item.active {
+    background-color: #f0e9ff;
+    color: #6a35ff;
+    border-right: 3px solid #6a35ff;
+  }
+  
+  .menu-item svg {
+    fill: currentColor;
+  }
+  
+  .menu-item span {
+    font-size: 0.9rem;
+  }

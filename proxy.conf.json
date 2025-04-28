@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://api.wosh.co.il",
+      "target": "https://wosh-dev.herokuapp.com/",
       "secure": false,
       "changeOrigin": true,
       "logLevel": "debug"

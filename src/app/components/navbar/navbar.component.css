@@ -1,0 +1,49 @@
+.navbar {
+  display: flex;
+  justify-content: space-between; /* This keeps left/right sections separated */
+  align-items: center;
+  padding: 0.7rem 1.2rem; /* Slimmer padding */
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* More subtle shadow */
+  height:30px; /* Slimmer height */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  min-width: fit-content;
+}
+
+.navbar-left {
+  margin-right: auto; /* Pushes everything else to the right */
+}
+
+.navbar-right {
+  margin-left: auto; /* This forces it to stay right */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Tighter spacing */
+  padding-right: 2rem;
+}
+
+/* Rest of your styles remain the same */
+.username {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.logout-button {
+  padding: 0.25rem;
+  min-width: 30px;
+}
+
+.logout-button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
