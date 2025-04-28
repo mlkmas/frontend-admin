@@ -19,11 +19,16 @@ export class LoginService {
 
   private loadToken(): void {
     const savedToken = localStorage.getItem(JWT_TOKEN_ENTRY);
+    console.log('Saved token on load:', savedToken);
     if (savedToken) {
       this.token = savedToken;
       this.isAuthenticated = true;
+      console.log('User marked as authenticated');
+    } else {
+      console.log('No token found. User is NOT authenticated.');
     }
   }
+  
 
   login(username: string, password: string): Observable<any> {
     // Using POST with form data (recommended for credentials)
@@ -57,8 +62,10 @@ export class LoginService {
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthenticated;
+    return !!localStorage.getItem('JWTTOKEN');
   }
+  
+  
 }
 
 
