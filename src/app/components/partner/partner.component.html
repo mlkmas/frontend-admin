@@ -1,1 +1,15 @@
-<p>partner works!</p>
+<div *ngIf="isLoading">Loading partners...</div>
+
+<div *ngIf="errorMessage">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="!isLoading && !errorMessage">
+  <h2>Partners List</h2>
+  <ul>
+    <li *ngFor="let partner of partners">
+      <img [src]="partner.photoUrl" alt="Partner Photo" width="50" height="50">
+      {{ partner.name }} - {{ partner.email }}
+    </li>
+  </ul>
+</div>
