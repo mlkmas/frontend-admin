@@ -17,5 +17,5 @@ export interface Partner {
     sendViaWhatsApp: boolean;
     sendViaNotification: boolean;
     displayName: string;
-  }
+}
   

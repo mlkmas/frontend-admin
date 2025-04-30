@@ -1,18 +1,23 @@
+// partner.component.ts
 import { Component, OnInit } from '@angular/core';
 import { PartnersService } from '../../services/partners.service';
 import { Partner } from '../../models/partner.model'; 
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { DefaultImgDirective } from '../../directives/default-img.directive';
 
 @Component({
   selector: 'app-partner',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, DefaultImgDirective],
   templateUrl: './partner.component.html',
-  styleUrl: './partner.component.css'
+  styleUrls: ['./partner.component.css']
 })
 export class PartnerComponent implements OnInit {
   partners: Partner[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
+  defaultImage: string = 'assets/defaultImg.jpg';
 
   constructor(private partnersService: PartnersService) {}
 
@@ -21,17 +26,26 @@ export class PartnerComponent implements OnInit {
   }
 
   getAllPartners() {
-    this.partnersService.getAllPartners().subscribe(
-      (data: Partner[]) => {
-        this.partners = data;
+    this.partnersService.getAllPartners().subscribe({
+      next: (data: Partner[]) => {
+        this.partners = data.map(partner => ({
+          ...partner,
+          name: partner.name || 'No Name',
+          email: partner.email || 'No Email',
+          phoneNumber: partner.phoneNumber || 'No Phone'
+        }));
         this.isLoading = false;
       },
-      (error) => {
+      error: (error) => {
         this.errorMessage = 'Failed to load partners.';
         this.isLoading = false;
       }
-    );
+    });
+  }
+
+  showPartnerDetails(partnerId: string) {
+    // Implement your partner details logic here
+    console.log('Show details for partner:', partnerId);
+    // You can navigate to a details page or show a modal
   }
 }
-
-
