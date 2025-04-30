@@ -1,16 +1,14 @@
-export class Customer {
-    id: number;
+// customer.model.ts
+export interface Customer {
+    id: string;
+    methodUID: string;
     name: string;
     email: string;
+    photoUrl: string;
     phoneNumber: string;
-
-    constructor(id: number, name: string,  email: string,phoneNumber:string ){
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-       
-    }
-
+    displayName: string;
+    isAdmin: boolean;
+    isApproved: boolean;
+    isSuspended: boolean;
+    number: number;
   }
-  

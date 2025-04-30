@@ -1,1 +1,66 @@
-<p>partner-details works!</p>
+<div class="partner-details-container">
+    <div *ngIf="isLoading" class="loading-state">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading partner details...</p>
+    </div>
+  
+    <div *ngIf="error" class="error-state">
+      <mat-icon class="error-icon">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="retry()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  
+    <div *ngIf="partner" class="partner-content">
+      <div class="header-section">
+        <div class="profile-header">
+          <img [src]="partner.coverPhotoUrl || partner.user.photoUrl || 'assets/default-profile.png'" 
+               alt="Profile image" 
+               class="profile-image">
+          <div class="profile-info">
+            <h2>{{ partner.user.name || partner.nickName }}</h2>
+            <div class="verification-badge" *ngIf="partner.isPhoneVerified === 'VERIFIED'">
+              <mat-icon>verified</mat-icon>
+              <span>Verified Partner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <mat-divider></mat-divider>
+  
+      <div class="details-section">
+        <div class="detail-row">
+          <mat-icon>email</mat-icon>
+          <span>{{ partner.user.email || 'No email provided' }}</span>
+        </div>
+  
+        <div class="detail-row">
+          <mat-icon>phone</mat-icon>
+          <span>{{ partner.preferredPhoneNumber || partner.user.phoneNumber || 'No phone provided' }}</span>
+        </div>
+  
+        <div *ngIf="partner.locale" class="detail-row">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ partner.locale.displayCountry }}, {{ partner.locale.displayLanguage }}</span>
+        </div>
+      </div>
+  
+      <mat-divider></mat-divider>
+  
+      <div *ngIf="partner.regions?.length" class="regions-section">
+        <h3>Service Regions</h3>
+        <div class="regions-grid">
+          <div *ngFor="let region of partner.regions" class="region-card">
+            <mat-icon>place</mat-icon>
+            <div>
+              <strong>{{ region.city }}</strong>
+              <p>{{ region.country }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

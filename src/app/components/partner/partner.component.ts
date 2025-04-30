@@ -5,6 +5,8 @@ import { Partner } from '../../models/partner.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
+import { PartnerDetailsComponent } from './../partner-details/partner-details.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-partner',
@@ -19,7 +21,7 @@ export class PartnerComponent implements OnInit {
   errorMessage: string | null = null;
   defaultImage: string = 'assets/defaultImg.jpg';
 
-  constructor(private partnersService: PartnersService) {}
+  constructor(private partnersService: PartnersService ,private dialog: MatDialog) {}
 
   ngOnInit() {
     this.getAllPartners();
@@ -44,8 +46,13 @@ export class PartnerComponent implements OnInit {
   }
 
   showPartnerDetails(partnerId: string) {
-    // Implement your partner details logic here
-    console.log('Show details for partner:', partnerId);
-    // You can navigate to a details page or show a modal
+    this.dialog.open(PartnerDetailsComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      data: { partnerId }, // Pass the partnerId to your existing component
+      panelClass: 'custom-dialog-container',
+      disableClose: false // Allows closing by clicking outside
+    });
   }
+
 }

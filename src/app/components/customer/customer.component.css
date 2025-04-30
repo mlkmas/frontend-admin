@@ -1,0 +1,129 @@
+.customer-table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 16px;
+  }
+  
+  .customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .customer-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #e0e0e0;
+  }
+  
+  .customer-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+  }
+  
+  .customer-row:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .customer-name-cell {
+    font-weight: 500;
+  }
+  
+  .customer-name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .customer-avatar-cell {
+    width: 60px;
+  }
+  
+  .customer-avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .customer-email-link {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .customer-email-link:hover {
+    text-decoration: underline;
+  }
+  
+  .suspend-btn {
+    color: white;
+    background-color: #28a745; /* Green for approve/active state */
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 100px; /* Fixed width for both buttons */
+    text-align: center;
+    transition: all 0.2s;
+  }
+  
+  /* Suspended state - Red */
+  .suspend-btn.suspended {
+    background-color: #dc3545; /* Red for suspended state */
+  }
+  
+  .suspend-btn:not([disabled]):hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .suspend-btn[disabled] {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  
+  .btn-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+    margin-left: 6px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  /* Loading and Error States */
+  .loading, .error {
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .error {
+    color: #f44336;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .customer-avatar-cell {
+      display: none;
+    }
+    
+    .customer-table th, 
+    .customer-table td {
+      padding: 8px 12px;
+    }
+    
+    .suspend-btn {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+  }
