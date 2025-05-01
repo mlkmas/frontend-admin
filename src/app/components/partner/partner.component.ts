@@ -49,7 +49,7 @@ export class PartnerComponent implements OnInit {
     this.dialog.open(PartnerDetailsComponent, {
       width: '600px',
       maxHeight: '90vh',
-      data: { partnerId }, // Pass the partnerId to your existing component
+      data: { partnerId }, 
       panelClass: 'custom-dialog-container',
       disableClose: false // Allows closing by clicking outside
     });

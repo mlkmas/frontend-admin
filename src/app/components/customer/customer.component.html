@@ -38,7 +38,7 @@
                     (click)="toggleSuspension(customer)"
                     [class.suspended]="customer.isSuspended"
                     [disabled]="actionInProgress === customer.id">
-              {{ customer.isSuspended ? 'Unsuspend' : 'Suspend' }}
+              {{ customer.isSuspended ? 'Re-Activate' : 'Suspend' }}
               <span *ngIf="actionInProgress === customer.id" class="btn-spinner"></span>
             </button>
           </td>

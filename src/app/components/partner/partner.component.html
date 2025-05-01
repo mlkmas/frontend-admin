@@ -5,18 +5,34 @@
         [appDefaultImg]="partner.photoUrl"
         [defaultImage]="defaultImage"
         alt="{{ partner.name }}" 
-        class="partner-img" />
+        class="partner-avatar" />
     </div>
-    <div class="partner-content">
+
+    <div class="partner-info">
       <h5 class="partner-name">{{ partner.name }}</h5>
-      <p class="partner-email">{{ partner.email }}</p>
-      <p class="partner-phone">{{ partner.phoneNumber }}</p>
-      <button (click)="showPartnerDetails(partner.id)" class="partner-button">
-        View Details
-      </button>
+      <p class="partner-role">Web Designer</p>
+      <div class="partner-contact">
+        <p class="truncate-text">{{ partner.email }}</p>
+        <p>{{ partner.phoneNumber }}</p>
+      </div>
     </div>
+
+    <button (click)="showPartnerDetails(partner.id)" class="partner-details-button">
+      View Details
+    </button>
+
+    <!-- <div class="partner-stats">
+      <div class="stat">
+        <ng-container *ngFor="let star of [].constructor(partner.stars)">
+          <i class="fa fa-star filled-star"></i>
+        </ng-container>
+      </div>
+      <div class="stat">
+        <i class="fa fa-comment"></i> {{ partner.reviews }}
+      </div>
+       <div class="stat">
+        <i class="fa fa-phone"></i> {{ partner.number }}
+      </div> 
+    </div> -->
   </div>
 </div>
-
-<div *ngIf="isLoading" class="loading">Loading partners...</div>
-<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>

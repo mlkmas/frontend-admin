@@ -4,7 +4,7 @@ export interface Partner {
     name: string;
     email: string;
     photoUrl: string;
-    utcTimeZoneOffset: any; // or you can create a nested model if you want
+    utcTimeZoneOffset: any; 
     fcmToken: string;
     isAdmin: boolean;
     isApproved: boolean;
