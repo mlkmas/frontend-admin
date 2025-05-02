@@ -9,7 +9,8 @@ import { PartnerDetails } from '../models/partner-details.model';
 })
 export class PartnersService {
   private baseUrl = '/api/administrator/getAllPartners'; // Proxy will handle the base URL
-
+private approveUrl = '/api/administrator/approveUser'; 
+private suspendUrl = '/api/administrator/suspendUser';
   private partnerDetailsUrl = '/api/administrator/getPartnerExtraDetails'; // 
   constructor(private http: HttpClient) {}
 
@@ -18,9 +19,34 @@ export class PartnersService {
   }
 
   getPartnerDetails(partnerId: string): Observable<PartnerDetails> {
-    return this.http.post<PartnerDetails>(
-      this.partnerDetailsUrl,
-      { partnerId }  // Try with 'id' instead of 'partnerId'
+    const params = new HttpParams().set('partnerId', partnerId);
+    return this.http.get<PartnerDetails>(this.partnerDetailsUrl, { params });
+  }
+  
+
+  suspendPartner(userId: string, isSuspended: boolean): Observable<string> {
+    return this.http.post<string>(
+      this.suspendUrl,
+      {},
+      {
+        params: {
+          userId: userId,
+          isSuspended: isSuspended.toString()
+        }
+      }
+    );
+  }
+
+  approvePartner(userId: string, isApproved: boolean): Observable<string> {
+    return this.http.post<string>(
+      this.approveUrl,
+      {},
+      {
+        params: {
+          userId: userId,
+          isApproved: isApproved.toString(),
+        }
+      }
     );
   }
 }

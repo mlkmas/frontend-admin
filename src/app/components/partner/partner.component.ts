@@ -8,6 +8,7 @@ import { DefaultImgDirective } from '../../directives/default-img.directive';
 import { PartnerDetailsComponent } from './../partner-details/partner-details.component';
 import { MatDialog } from '@angular/material/dialog';
 
+
 @Component({
   selector: 'app-partner',
   standalone: true,
@@ -20,7 +21,8 @@ export class PartnerComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string | null = null;
   defaultImage: string = 'assets/defaultImg.jpg';
-
+  actionInProgress: string | null = null;
+  
   constructor(private partnersService: PartnersService ,private dialog: MatDialog) {}
 
   ngOnInit() {
@@ -45,7 +47,50 @@ export class PartnerComponent implements OnInit {
     });
   }
 
+  togglePartnerStatus(partner: Partner) {
+    this.actionInProgress = partner.id;
+    
+    if (!partner.isApproved) {
+      // Approve the partner
+      this.partnersService.approvePartner(partner.id, true).subscribe({
+        next: () => {
+          partner.isApproved = true;
+          partner.isSuspended = false;
+          this.actionInProgress = null;
+        },
+        error: (error) => {
+          this.errorMessage = 'Failed to approve partner.';
+          this.actionInProgress = null;
+        }
+      });
+    } else {
+      // Toggle suspension status
+      const newSuspendedState = !partner.isSuspended;
+      this.partnersService.suspendPartner(partner.id, newSuspendedState).subscribe({
+        next: () => {
+          partner.isSuspended = newSuspendedState;
+          this.actionInProgress = null;
+        },
+        error: (error) => {
+          this.errorMessage = `Failed to ${newSuspendedState ? 'suspend' : 'reactivate'} partner.`;
+          this.actionInProgress = null;
+        }
+      });
+    }
+  }
+
+
+  getButtonText(partner: Partner): string {
+    if (!partner.isApproved) return 'Approve';
+    return partner.isSuspended ? 'Reactivate' : 'Suspend';
+  }
+
+  getButtonClass(partner: Partner): string {
+    if (!partner.isApproved) return 'btn-success';
+    return partner.isSuspended ? 'btn-info' : 'btn-warning';
+  }
   showPartnerDetails(partnerId: string) {
+    console.log('Clicked partner ID:', partnerId);
     this.dialog.open(PartnerDetailsComponent, {
       width: '600px',
       maxHeight: '90vh',

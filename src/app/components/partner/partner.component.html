@@ -16,23 +16,21 @@
         <p>{{ partner.phoneNumber }}</p>
       </div>
     </div>
-
+    <div class="partner-actions">
+      <button 
+        class="status-btn" 
+        (click)="togglePartnerStatus(partner)"
+        [class.pending]="!partner.isApproved"
+        [class.suspended]="partner.isApproved && partner.isSuspended"
+        [disabled]="actionInProgress === partner.id">
+        <span *ngIf="actionInProgress !== partner.id">
+          {{ !partner.isApproved ? 'Approve' : (partner.isSuspended ? 'Re-Activate' : 'Suspend') }}
+        </span>
+        <span *ngIf="actionInProgress === partner.id" class="btn-spinner"></span>
+      </button>
     <button (click)="showPartnerDetails(partner.id)" class="partner-details-button">
       View Details
     </button>
 
-    <!-- <div class="partner-stats">
-      <div class="stat">
-        <ng-container *ngFor="let star of [].constructor(partner.stars)">
-          <i class="fa fa-star filled-star"></i>
-        </ng-container>
-      </div>
-      <div class="stat">
-        <i class="fa fa-comment"></i> {{ partner.reviews }}
-      </div>
-       <div class="stat">
-        <i class="fa fa-phone"></i> {{ partner.number }}
-      </div> 
-    </div> -->
   </div>
 </div>
