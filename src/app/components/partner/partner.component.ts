@@ -30,6 +30,9 @@ export class PartnerComponent implements OnInit {
   }
 
   getAllPartners() {
+    this.isLoading = true;
+    this.errorMessage = null;
+    
     this.partnersService.getAllPartners().subscribe({
       next: (data: Partner[]) => {
         this.partners = data.map(partner => ({
@@ -48,35 +51,30 @@ export class PartnerComponent implements OnInit {
   }
 
   togglePartnerStatus(partner: Partner) {
+    if (this.actionInProgress) return; // Prevent multiple clicks
+    
     this.actionInProgress = partner.id;
     
-    if (!partner.isApproved) {
-      // Approve the partner
-      this.partnersService.approvePartner(partner.id, true).subscribe({
-        next: () => {
+    const operation = !partner.isApproved 
+      ? this.partnersService.approvePartner(partner.id, true)
+      : this.partnersService.suspendPartner(partner.id, !partner.isSuspended);
+
+    operation.subscribe({
+      next: () => {
+        if (!partner.isApproved) {
           partner.isApproved = true;
           partner.isSuspended = false;
-          this.actionInProgress = null;
-        },
-        error: (error) => {
-          this.errorMessage = 'Failed to approve partner.';
-          this.actionInProgress = null;
+        } else {
+          partner.isSuspended = !partner.isSuspended;
         }
-      });
-    } else {
-      // Toggle suspension status
-      const newSuspendedState = !partner.isSuspended;
-      this.partnersService.suspendPartner(partner.id, newSuspendedState).subscribe({
-        next: () => {
-          partner.isSuspended = newSuspendedState;
-          this.actionInProgress = null;
-        },
-        error: (error) => {
-          this.errorMessage = `Failed to ${newSuspendedState ? 'suspend' : 'reactivate'} partner.`;
-          this.actionInProgress = null;
-        }
-      });
-    }
+        this.actionInProgress = null;
+      },
+      error: (error) => {
+        console.error('Error updating partner status:', error);
+        this.errorMessage = `Failed to ${!partner.isApproved ? 'approve' : partner.isSuspended ? 'reactivate' : 'suspend'} partner.`;
+        this.actionInProgress = null;
+      }
+    });
   }
 
 
@@ -89,15 +87,18 @@ export class PartnerComponent implements OnInit {
     if (!partner.isApproved) return 'btn-success';
     return partner.isSuspended ? 'btn-info' : 'btn-warning';
   }
-  showPartnerDetails(partnerId: string) {
-    console.log('Clicked partner ID:', partnerId);
-    this.dialog.open(PartnerDetailsComponent, {
+  showPartnerDetails(partner: Partner) {
+    const dialogRef = this.dialog.open(PartnerDetailsComponent, {
       width: '600px',
       maxHeight: '90vh',
-      data: { partnerId }, 
+      data: { partner }, // Pass the entire partner object
       panelClass: 'custom-dialog-container',
-      disableClose: false // Allows closing by clicking outside
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // You can handle any actions after dialog closes here
     });
   }
-
 }

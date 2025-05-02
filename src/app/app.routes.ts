@@ -1,5 +1,3 @@
-
-
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 import { LoginComponent } from './components/login/login.component';
@@ -8,7 +6,10 @@ import { PartnerComponent } from './components/partner/partner.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { HomeDashboardComponent } from './components/home-dashboard/home-dashboard.component';
 import{ PartnerDetailsComponent } from './components/partner-details/partner-details.component';
- export const routes: Routes = [
+import { StatisticsComponent } from './components/statistics/statistics.component';
+import { ReservationComponent } from './components/reservation/reservation.component';
+
+export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   {
@@ -17,12 +18,11 @@ import{ PartnerDetailsComponent } from './components/partner-details/partner-det
     canActivate: [AuthGuard],
     children: [
       { path: '', component: HomeDashboardComponent },
-      //{ path: '', redirectTo: 'home', pathMatch: 'full' },
-     // { path: 'home', component: HomeComponent },
+      { path: 'statistics', component: StatisticsComponent },
       { path: 'partner', component: PartnerComponent },
       { path: 'customer', component: CustomerComponent },
-      { path: 'partner-details', component: PartnerDetailsComponent }
-      // TO DO: { path: 'reservation', component: ReservationComponent }
+      { path: 'partner-details', component: PartnerDetailsComponent },
+     { path: 'reservation', component: ReservationComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }

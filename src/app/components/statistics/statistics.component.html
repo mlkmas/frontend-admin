@@ -1,0 +1,44 @@
+
+<div class="statistics-container">
+    <div class="header">
+      <h2>System Statistics</h2>
+      <button (click)="refresh()" class="refresh-btn">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading">Loading statistics...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  
+    <div *ngIf="stats && !isLoading" class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.customersNumber }}</div>
+        <div class="stat-label">Customers</div>
+      </div>
+  
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.partnersNumber }}</div>
+        <div class="stat-label">Partners</div>
+      </div>
+  
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.carsNumber }}</div>
+        <div class="stat-label">Cars</div>
+      </div>
+  
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.totalReservations }}</div>
+        <div class="stat-label">Total Reservations</div>
+      </div>
+  
+      <div class="stat-card warning">
+        <div class="stat-value">{{ stats.problematicReservations }}</div>
+        <div class="stat-label">Problematic Reservations</div>
+      </div>
+  
+      <div class="stat-card success">
+        <div class="stat-value">{{ stats.closedReservations }}</div>
+        <div class="stat-label">Closed Reservations</div>
+      </div>
+    </div>
+  </div>

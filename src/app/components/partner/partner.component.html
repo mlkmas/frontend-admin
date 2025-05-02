@@ -10,7 +10,7 @@
 
     <div class="partner-info">
       <h5 class="partner-name">{{ partner.name }}</h5>
-      <p class="partner-role">Web Designer</p>
+      <!-- <p class="partner-role">Web Designer</p> -->
       <div class="partner-contact">
         <p class="truncate-text">{{ partner.email }}</p>
         <p>{{ partner.phoneNumber }}</p>
@@ -28,7 +28,7 @@
         </span>
         <span *ngIf="actionInProgress === partner.id" class="btn-spinner"></span>
       </button>
-    <button (click)="showPartnerDetails(partner.id)" class="partner-details-button">
+    <button (click)="showPartnerDetails(partner)" class="partner-details-button">
       View Details
     </button>
 

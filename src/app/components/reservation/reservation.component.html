@@ -1,0 +1,64 @@
+<div class="reservation-container">
+  <!-- Loading and Error States -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading reservations...</p>
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <mat-icon class="error-icon">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadReservations()">
+      <mat-icon>refresh</mat-icon>
+      Retry
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !error" class="card">
+    <div class="card-header">
+      <h3>Reservation Monitor</h3>
+    </div>
+    <div class="card-body table-responsive">
+      <table class="table table-hover m-b-0">
+        <thead>
+          <tr>
+            <th>Reservation #</th>
+            <th>Customer</th>
+            <th>Arrival Time</th>
+            <th>Status</th>
+            <th>Total Price</th>
+            <th>Verified</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of reservations" (click)="showDetails(reservation)">
+            <td>{{ reservation.number }}</td>
+            <td>{{ reservation.customer.name || 'N/A' }}</td>
+            <td>{{ formatDate(reservation.arrivalTimeFrom) }}</td>
+            <td>
+              <span class="status-badge {{reservation.statusClass}}">
+                {{ reservation.lastReservationEvents.reservationStatus || 'N/A' }}
+              </span>
+            </td>
+            <td>{{ reservation.totalTransactionsAmount | currency }}</td>
+            <td>
+              <mat-icon [class.text-success]="reservation.verified" [class.text-danger]="!reservation.verified">
+                {{ reservation.verified ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detail View -->
+  <div *ngIf="selectedReservation" class="detail-view">
+    <button mat-icon-button (click)="closeDetails()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Reservation #{{ selectedReservation.number }}</h2>
+    <!-- ... rest of your detail view ... -->
+  </div>
+</div>

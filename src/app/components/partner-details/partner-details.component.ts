@@ -5,8 +5,10 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PartnerDetails } from '../../models/partner-details.model';
+import { Partner } from '../../models/partner.model';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { PartnerDetails } from '../../models/partner-details.model';
 @Component({
   selector: 'app-partner-details',
   standalone: true,
@@ -15,42 +17,51 @@ import { MatDividerModule } from '@angular/material/divider';
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
-    MatDividerModule 
+    MatDividerModule,
+    MatDialogModule
   ],
   templateUrl: './partner-details.component.html',
   styleUrls: ['./partner-details.component.css']
 })
 export class PartnerDetailsComponent {
-  partner: PartnerDetails | null = null;
-  isLoading = true;
+  partner: Partner; // Changed from basicPartner to just partner
+  extraDetails: PartnerDetails | null = null;
+  isLoading = false; // Since we're passing data directly, no initial loading needed
+  isLoadingExtra = false;
   error: string | null = null;
+  showExtraDetails = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { partnerId: string },
+    @Inject(MAT_DIALOG_DATA) public data: { partner: Partner },
     private partnersService: PartnersService
   ) {
-    this.loadPartnerDetails();
+    this.partner = data.partner;
   }
-  loadPartnerDetails(): void {
-    this.isLoading = true;
+
+  loadExtraDetails(): void {
+    if (this.extraDetails) {
+      this.showExtraDetails = !this.showExtraDetails;
+      return;
+    }
+
+    this.isLoadingExtra = true;
     this.error = null;
-  
-    this.partnersService.getPartnerDetails(this.data.partnerId).subscribe({
+    
+    this.partnersService.getPartnerExtraDetails(this.partner.id).subscribe({
       next: (data) => {
-        console.log('Received data:', data); // Debug log
-        this.partner = data;
-        this.isLoading = false;
+        this.extraDetails = data;
+        this.showExtraDetails = true;
+        this.isLoadingExtra = false;
       },
       error: (err) => {
-        console.error('Full error chain:', err);
-        this.error = typeof err === 'string' ? err : 
-          'Failed to load details. Check console for details.';
-        this.isLoading = false;
+        console.error('Error loading extra details:', err);
+        this.error = 'Failed to load extra details. Please try again.';
+        this.isLoadingExtra = false;
       }
     });
   }
 
   retry(): void {
-    this.loadPartnerDetails();
+    this.loadExtraDetails();
   }
 }

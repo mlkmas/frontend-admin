@@ -1,66 +1,111 @@
 <div class="partner-details-container">
-    <div *ngIf="isLoading" class="loading-state">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading partner details...</p>
-    </div>
-  
-    <div *ngIf="error" class="error-state">
-      <mat-icon class="error-icon">error</mat-icon>
-      <p>{{ error }}</p>
-      <button mat-raised-button color="primary" (click)="retry()">
-        <mat-icon>refresh</mat-icon>
-        Retry
-      </button>
-    </div>
-  
-    <div *ngIf="partner" class="partner-content">
-      <div class="header-section">
-        <div class="profile-header">
-          <img [src]="partner.coverPhotoUrl || partner.user.photoUrl || 'assets/default-profile.png'" 
-               alt="Profile image" 
-               class="profile-image">
-          <div class="profile-info">
-            <h2>{{ partner.user.name || partner.nickName }}</h2>
-            <div class="verification-badge" *ngIf="partner.isPhoneVerified === 'VERIFIED'">
-              <mat-icon>verified</mat-icon>
-              <span>Verified Partner</span>
-            </div>
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading partner details...</p>
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <mat-icon class="error-icon">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="retry()">
+      <mat-icon>refresh</mat-icon>
+      Retry
+    </button>
+  </div>
+
+  <div *ngIf="partner" class="partner-content">
+    <div class="header-section">
+      <div class="profile-header">
+        <img [src]="partner.photoUrl || 'assets/default-profile.png'" 
+             alt="Profile image" 
+             class="profile-image">
+        <div class="profile-info">
+          <h2>{{ partner.name }}</h2>
+          <div class="verification-badge" *ngIf="partner.isPhoneVerified === 'VERIFIED'">
+            <mat-icon>verified</mat-icon>
+            <span>Verified Partner</span>
+          </div>
+          <div class="partner-status">
+            <span [class.approved]="partner.isApproved" 
+                  [class.suspended]="partner.isSuspended">
+              {{ partner.isApproved ? (partner.isSuspended ? 'Suspended' : 'Active') : 'Pending' }}
+            </span>
           </div>
         </div>
       </div>
-  
-      <mat-divider></mat-divider>
-  
-      <div class="details-section">
-        <div class="detail-row">
-          <mat-icon>email</mat-icon>
-          <span>{{ partner.user.email || 'No email provided' }}</span>
-        </div>
-  
-        <div class="detail-row">
-          <mat-icon>phone</mat-icon>
-          <span>{{ partner.preferredPhoneNumber || partner.user.phoneNumber || 'No phone provided' }}</span>
-        </div>
-  
-        <div *ngIf="partner.locale" class="detail-row">
-          <mat-icon>location_on</mat-icon>
-          <span>{{ partner.locale.displayCountry }}, {{ partner.locale.displayLanguage }}</span>
-        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="details-section">
+      <div class="detail-row">
+        <mat-icon>email</mat-icon>
+        <span class="detail-text">{{ partner.email || 'No email provided' }}</span>
       </div>
-  
-      <mat-divider></mat-divider>
-  
-      <div *ngIf="partner.regions?.length" class="regions-section">
-        <h3>Service Regions</h3>
-        <div class="regions-grid">
-          <div *ngFor="let region of partner.regions" class="region-card">
-            <mat-icon>place</mat-icon>
-            <div>
-              <strong>{{ region.city }}</strong>
-              <p>{{ region.country }}</p>
+
+      <div class="detail-row">
+        <mat-icon>phone</mat-icon>
+        <span class="detail-text">{{ partner.phoneNumber || 'No phone provided' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <mat-icon>admin_panel_settings</mat-icon>
+        <span class="detail-text">Admin: {{ partner.isAdmin ? 'Yes' : 'No' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <mat-icon>notifications</mat-icon>
+        <span class="detail-text">Notifications: {{ partner.sendViaNotification ? 'Enabled' : 'Disabled' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <mat-icon>star</mat-icon>
+        <span class="detail-text">Rating: {{ partner.stars || 'No ratings' }} ({{ partner.reviews || 0 }} reviews)</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="extra-details-section">
+      <button mat-raised-button color="primary" (click)="loadExtraDetails()" class="toggle-details-btn">
+        <mat-icon>{{ showExtraDetails ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <span *ngIf="!isLoadingExtra">
+          {{ showExtraDetails ? 'Hide Extra Details' : 'Show Extra Details' }}
+        </span>
+        <mat-spinner *ngIf="isLoadingExtra" diameter="20"></mat-spinner>
+      </button>
+
+      <div *ngIf="showExtraDetails && extraDetails" class="extra-details-content">
+        <h3>Additional Information</h3>
+        
+        <div class="detail-row">
+          <mat-icon>person</mat-icon>
+          <span class="detail-text">Nickname: {{ extraDetails.nickName || 'Not specified' }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-icon>call</mat-icon>
+          <span class="detail-text">Preferred Phone: {{ extraDetails.preferredPhoneNumber || 'Not specified' }}</span>
+        </div>
+
+        <div *ngIf="extraDetails.locale" class="detail-row">
+          <mat-icon>language</mat-icon>
+          <span class="detail-text">Locale: {{ extraDetails.locale.displayCountry }}, {{ extraDetails.locale.displayLanguage }}</span>
+        </div>
+
+        <div *ngIf="extraDetails.regions?.length" class="regions-section">
+          <h4>Service Regions</h4>
+          <div class="regions-grid">
+            <div *ngFor="let region of extraDetails.regions" class="region-card">
+              <mat-icon>place</mat-icon>
+              <div>
+                <strong>{{ region.city }}</strong>
+                <p>{{ region.country }}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
