@@ -38,16 +38,6 @@ private suspendUrl = '/api/administrator/suspendUser';
   }
   
 
-  getPartnerExtraDetails(partnerId: string): Observable<PartnerDetails> {
-    return this.http.get<PartnerDetails>(
-      this.partnerDetailsUrl,
-      {
-        params: { partnerId }
-      }
-    ).pipe(
-      catchError(this.handleError)
-    );
-  }
 
   suspendPartner(userId: string, isSuspended: boolean): Observable<string> {
     return this.http.post<string>(
@@ -79,11 +69,18 @@ private suspendUrl = '/api/administrator/suspendUser';
     return this.http.post<SystemStatistics>(this.statisticUrl, {});
   }
 
-  getPartnerPackages(partnerId: string): Observable<Package[]> {
-    return this.http.get<Package[]>(this.packagesUrl, {
-      params: { partnerId }
-    });
+  
+  getPartnerExtraDetails(partnerId: string): Observable<PartnerDetails> {
+    const params = new HttpParams().set('partnerId', partnerId);
+    return this.http.post<PartnerDetails>(this.partnerDetailsUrl, null, { params })
+      .pipe(catchError(this.handleError));
   }
+  
+  getPartnerPackages(partnerId: string): Observable<Package[]> {
+    const params = new HttpParams().set('partnerId', partnerId);
+    return this.http.post<Package[]>(this.packagesUrl, null, { params });
+  }
+  
 
   addPartnerPackage(partnerId: string, packageData: Package): Observable<string> {
     return this.http.post<string>(this.addPackageUrl, packageData, {
