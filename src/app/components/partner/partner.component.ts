@@ -7,12 +7,12 @@ import { RouterModule } from '@angular/router';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
 import { PartnerDetailsComponent } from './../partner-details/partner-details.component';
 import { MatDialog } from '@angular/material/dialog';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-partner',
   standalone: true,
-  imports: [CommonModule, RouterModule, DefaultImgDirective],
+  imports: [CommonModule, RouterModule, DefaultImgDirective,MatIconModule],
   templateUrl: './partner.component.html',
   styleUrls: ['./partner.component.css']
 })
@@ -89,7 +89,8 @@ export class PartnerComponent implements OnInit {
   }
   showPartnerDetails(partner: Partner) {
     const dialogRef = this.dialog.open(PartnerDetailsComponent, {
-      width: '600px',
+      width: '900px',
+      maxWidth: '900',
       maxHeight: '90vh',
       data: { partner }, // Pass the entire partner object
       panelClass: 'custom-dialog-container',
@@ -98,7 +99,7 @@ export class PartnerComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      // You can handle any actions after dialog closes here
+      
     });
   }
 }

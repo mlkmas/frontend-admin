@@ -39,7 +39,7 @@
 
     <div class="details-section">
       <div class="detail-row">
-        <mat-icon>email</mat-icon>
+        <mat-icon> email</mat-icon>
         <span class="detail-text">{{ partner.email || 'No email provided' }}</span>
       </div>
 
@@ -74,7 +74,7 @@
         </span>
         <mat-spinner *ngIf="isLoadingExtra" diameter="20"></mat-spinner>
       </button>
-
+      
       <div *ngIf="showExtraDetails && extraDetails" class="extra-details-content">
         <h3>Additional Information</h3>
         
@@ -106,6 +106,64 @@
           </div>
         </div>
       </div>
+
+      <!-- Add this section after the extra-details-section -->
+<div class="package-management-section">
+  <button mat-raised-button color="primary" (click)="togglePackageView()" class="toggle-packages-btn">
+    <mat-icon>{{ showPackages ? 'expand_less' : 'expand_more' }}</mat-icon>
+    <span>{{ showPackages ? 'Hide Packages' : 'Show Packages' }}</span>
+  </button>
+
+  <div *ngIf="showPackages" class="packages-content">
+    <div *ngIf="packageLoading" class="loading">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+
+    <div *ngIf="packageError" class="error">
+      {{ packageError }}
+      <button mat-button (click)="loadPackages()">Retry</button>
+    </div>
+
+    <div *ngIf="packages.length > 0">
+      <h3>Packages</h3>
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let pkg of packages">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ pkg.packageName }}</mat-panel-title>
+            <mat-panel-description>
+              {{ pkg.priceDTO.totalPrice | currency:pkg.currency }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="package-details">
+            <h4>Questions</h4>
+            <mat-list>
+              <mat-list-item *ngFor="let question of pkg.questions">
+                {{ question.text }}
+                <button mat-icon-button color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+
+            <div class="add-question">
+              <mat-form-field appearance="outline">
+                <mat-label>New Question</mat-label>
+                <input matInput [(ngModel)]="newQuestionText">
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="addQuestion()">Add Question</button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <div *ngIf="!packageLoading && packages.length === 0" class="no-packages">
+      No packages found for this partner.
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 </div>

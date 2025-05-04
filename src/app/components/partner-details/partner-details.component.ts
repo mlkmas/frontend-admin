@@ -2,23 +2,35 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PartnersService } from '../../services/partners.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Added for ngModel
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input'; // Added for input
+import { MatExpansionModule } from '@angular/material/expansion';
 import { Partner } from '../../models/partner.model';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PartnerDetails } from '../../models/partner-details.model';
+import { Package, Question } from '../../models/package.model';
+
 @Component({
   selector: 'app-partner-details',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule, 
     MatProgressSpinnerModule,
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatExpansionModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatInputModule, 
   ],
   templateUrl: './partner-details.component.html',
   styleUrls: ['./partner-details.component.css']
@@ -30,7 +42,13 @@ export class PartnerDetailsComponent {
   isLoadingExtra = false;
   error: string | null = null;
   showExtraDetails = false;
-
+  showPackages = false;
+  packages: Package[] = [];
+  packageLoading = false;
+  packageError: string | null = null;
+  selectedPackage: Package | null = null;
+  newQuestionText = '';
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { partner: Partner },
     private partnersService: PartnersService
@@ -63,5 +81,50 @@ export class PartnerDetailsComponent {
 
   retry(): void {
     this.loadExtraDetails();
+  }
+  loadPackages(): void {
+    this.packageLoading = true;
+    this.packageError = null;
+    
+    this.partnersService.getPartnerPackages(this.partner.id).subscribe({
+      next: (data) => {
+        this.packages = data;
+        this.packageLoading = false;
+      },
+      error: (err) => {
+        this.packageError = 'Failed to load packages';
+        this.packageLoading = false;
+      }
+    });
+  }
+  
+  togglePackageView(): void {
+    this.showPackages = !this.showPackages;
+    if (this.showPackages && this.packages.length === 0) {
+      this.loadPackages();
+    }
+  }
+  
+  addQuestion(): void {
+    if (!this.selectedPackage || !this.newQuestionText) return;
+    
+    const newQuestion: Question = {
+      id: this.generateGuid(),
+      text: this.newQuestionText,
+      type: 0,
+      expectedAnswer: '',
+      mandatory: true
+    };
+    
+    this.selectedPackage.questions.push(newQuestion);
+    this.newQuestionText = '';
+  }
+  
+  private generateGuid(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0,
+        v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 }

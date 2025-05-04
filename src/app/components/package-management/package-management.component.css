@@ -1,0 +1,23 @@
+/* package-management.component.css */
+.package-management-container {
+    padding: 20px;
+  }
+  
+  .package-list, .package-details, .new-package {
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .add-question {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }

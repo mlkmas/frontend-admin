@@ -1,0 +1,96 @@
+<div class="package-management-container">
+    <h2>Package Management</h2>
+  
+    <div *ngIf="isLoading" class="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  
+    <div *ngIf="error" class="error">
+      {{ error }}
+      <button mat-button (click)="loadPackages()">Retry</button>
+    </div>
+  
+    <div class="package-list">
+      <h3>Packages</h3>
+      <table mat-table [dataSource]="packages" class="mat-elevation-z1">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let pkg">{{ pkg.packageName }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let pkg">{{ pkg.priceDTO?.totalPrice | currency:pkg.currency }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let pkg">
+            <button mat-icon-button (click)="selectPackage(pkg)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="removePackage(pkg.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  
+    <div class="package-details" *ngIf="selectedPackage">
+      <h3>Edit Package: {{ selectedPackage.packageName }}</h3>
+      
+      <div class="questions-section">
+        <h4>Questions</h4>
+        <table mat-table [dataSource]="selectedPackage.questions" class="mat-elevation-z1">
+          <ng-container matColumnDef="text">
+            <th mat-header-cell *matHeaderCellDef>Question</th>
+            <td mat-cell *matCellDef="let question">{{ question.text }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let question">{{ question.type }}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let question">
+              <button mat-icon-button color="warn" (click)="removeQuestion(question.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="questionsDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: questionsDisplayedColumns;"></tr>
+        </table>
+  
+        <div class="add-question">
+          <mat-form-field appearance="outline">
+            <mat-label>New Question</mat-label>
+            <input matInput [(ngModel)]="newQuestionText">
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="addQuestion()">Add Question</button>
+        </div>
+  
+        <button mat-raised-button color="primary" (click)="saveQuestions()">Save Questions</button>
+      </div>
+    </div>
+  
+    <div class="new-package">
+      <h3>Add New Package</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Package Name</mat-label>
+        <input matInput [(ngModel)]="newPackage.packageName">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Currency</mat-label>
+        <input matInput [(ngModel)]="newPackage.currency">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="addNewPackage()">Add Package</button>
+    </div>
+  </div>

@@ -1,44 +1,71 @@
-
 <div class="statistics-container">
-    <div class="header">
-      <h2>System Statistics</h2>
-      <button (click)="refresh()" class="refresh-btn">
-        <i class="fas fa-sync-alt"></i> Refresh
-      </button>
+  <div class="header">
+    <h2>System Statistics</h2>
+    <button (click)="refresh()" class="refresh-btn">
+      <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">Loading statistics...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="stats && !isLoading" class="split-layout">
+    <!-- Left side - Stat Cards -->
+    <div class="cards-section">
+      <div class="stats-grid">
+        <div class="stat-card" [style.border-top]="'4px solid #5A8DEE'">
+          <div class="stat-value">{{ stats.customersNumber }}</div>
+          <div class="stat-label">Customers</div>
+        </div>
+        
+        <div class="stat-card" [style.border-top]="'4px solid #FDAC41'">
+          <div class="stat-value">{{ stats.partnersNumber }}</div>
+          <div class="stat-label">Partners</div>
+        </div>
+        
+        <div class="stat-card" [style.border-top]="'4px solid #39DA8A'">
+          <div class="stat-value">{{ stats.carsNumber }}</div>
+          <div class="stat-label">Cars</div>
+        </div>
+        
+        <div class="stat-card" [style.border-top]="'4px solid #FF5B5B'">
+          <div class="stat-value">{{ stats.totalReservations }}</div>
+          <div class="stat-label">Total Reservations</div>
+        </div>
+        
+        <div class="stat-card" [style.border-top]="'4px solid #FFC107'">
+          <div class="stat-value">{{ stats.problematicReservations }}</div>
+          <div class="stat-label">Problematic</div>
+        </div>
+        
+        <div class="stat-card" [style.border-top]="'4px solid #28A745'">
+          <div class="stat-value">{{ stats.closedReservations }}</div>
+          <div class="stat-label">Closed</div>
+        </div>
+      </div>
     </div>
-  
-    <div *ngIf="isLoading" class="loading">Loading statistics...</div>
-    <div *ngIf="error" class="error">{{ error }}</div>
-  
-    <div *ngIf="stats && !isLoading" class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value">{{ stats.customersNumber }}</div>
-        <div class="stat-label">Customers</div>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-value">{{ stats.partnersNumber }}</div>
-        <div class="stat-label">Partners</div>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-value">{{ stats.carsNumber }}</div>
-        <div class="stat-label">Cars</div>
-      </div>
-  
-      <div class="stat-card">
-        <div class="stat-value">{{ stats.totalReservations }}</div>
-        <div class="stat-label">Total Reservations</div>
-      </div>
-  
-      <div class="stat-card warning">
-        <div class="stat-value">{{ stats.problematicReservations }}</div>
-        <div class="stat-label">Problematic Reservations</div>
-      </div>
-  
-      <div class="stat-card success">
-        <div class="stat-value">{{ stats.closedReservations }}</div>
-        <div class="stat-label">Closed Reservations</div>
+
+    <!-- Right side - Chart -->
+    <div class="chart-section">
+      <div class="chart-container">
+        <div class="legend-title">System Statistics Visualization</div>
+        <div class="chart-wrapper">
+          <igx-category-chart
+            #chart
+            [dataSource]="chartData"
+            [brushes]="chartColors"
+            chartType="Column"
+            xAxisTitle="Category"
+            yAxisTitle="Count"
+            isHorizontalZoomEnabled="false"
+            isVerticalZoomEnabled="false"
+            outlines="white"
+            thickness="1.5"
+            xAxisPropertyPath="Label"
+            yAxisPropertyPath="Value">
+          </igx-category-chart>
+        </div>
       </div>
     </div>
   </div>
+</div>

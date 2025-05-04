@@ -128,3 +128,22 @@
       padding: 6px 12px;
     }
   }
+  /* Add this to your existing customer table styles */
+.customer-table tbody tr {
+  transition: background-color 0.2s ease; /* Smooth transition */
+}
+
+.customer-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.04); /* Same as reservation table */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+}
+
+/* Optional: Add subtle animation to make it more interactive */
+.customer-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.customer-table tbody tr:hover {
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle shadow */
+}

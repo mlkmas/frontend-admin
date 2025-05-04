@@ -4,6 +4,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { Partner } from '../models/partner.model';
 import { PartnerDetails } from '../models/partner-details.model';
 import { SystemStatistics } from '../models/statistics.model';
+import { Package, Question } from '../models/package.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,12 @@ private approveUrl = '/api/administrator/approveUser';
 private suspendUrl = '/api/administrator/suspendUser';
   private partnerDetailsUrl = '/api/administrator/getPartnerExtraDetails'; 
   private statisticUrl = '/api/administrator/statistics/systemStatistics';
-  
+  private packagesUrl = '/api/administrator/getPartnerPackages';
+  private addPackageUrl = '/api/administrator/addPartnerPackage';
+  private updateQuestionsUrl = '/api/administrator/Packages/questions/update';
+  private removePackageUrl = '/api/administrator/removePackage';
+
+
   constructor(private http: HttpClient) {}
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
@@ -71,4 +78,29 @@ private suspendUrl = '/api/administrator/suspendUser';
   getSystemStatistics(): Observable<SystemStatistics> {
     return this.http.post<SystemStatistics>(this.statisticUrl, {});
   }
+
+  getPartnerPackages(partnerId: string): Observable<Package[]> {
+    return this.http.get<Package[]>(this.packagesUrl, {
+      params: { partnerId }
+    });
+  }
+
+  addPartnerPackage(partnerId: string, packageData: Package): Observable<string> {
+    return this.http.post<string>(this.addPackageUrl, packageData, {
+      params: { partnerId }
+    });
+  }
+
+  updatePackageQuestions(partnerId: string, packageId: string, questions: Question[]): Observable<string> {
+    return this.http.post<string>(this.updateQuestionsUrl, questions, {
+      params: { partnerId, packageId }
+    });
+  }
+
+  removePackage(partnerId: string, packageId: string): Observable<string> {
+    return this.http.delete<string>(this.removePackageUrl, {
+      params: { partnerId, packageId }
+    });
+  }
+
 }

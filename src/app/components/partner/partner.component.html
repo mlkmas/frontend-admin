@@ -28,9 +28,10 @@
         </span>
         <span *ngIf="actionInProgress === partner.id" class="btn-spinner"></span>
       </button>
-    <button (click)="showPartnerDetails(partner)" class="partner-details-button">
-      View Details
-    </button>
-
+      <button (click)="showPartnerDetails(partner)" class="details-btn">
+        <!-- <mat-icon>visibility</mat-icon> -->
+        <span>View Details</span>
+      </button>
+    </div>
   </div>
 </div>
