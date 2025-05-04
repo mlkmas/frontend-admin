@@ -2,13 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PartnersService } from '../../services/partners.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Added for ngModel
+import { FormsModule } from '@angular/forms'; 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input'; // Added for input
+import { MatInputModule } from '@angular/material/input'; 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Partner } from '../../models/partner.model';
 import { MatDividerModule } from '@angular/material/divider';
@@ -36,9 +36,9 @@ import { Package, Question } from '../../models/package.model';
   styleUrls: ['./partner-details.component.css']
 })
 export class PartnerDetailsComponent {
-  partner: Partner; // Changed from basicPartner to just partner
+  partner: Partner; 
   extraDetails: PartnerDetails | null = null;
-  isLoading = false; // Since we're passing data directly, no initial loading needed
+  isLoading = false;
   isLoadingExtra = false;
   error: string | null = null;
   showExtraDetails = false;

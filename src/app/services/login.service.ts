@@ -31,7 +31,7 @@ export class LoginService {
   
 
   login(username: string, password: string): Observable<any> {
-    // Using POST with form data (recommended for credentials)
+    
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);

@@ -19,20 +19,49 @@
     <div class="card-header">
       <h3>Reservation Monitor</h3>
     </div>
+    <div class="table-controls">
+      <input type="text" [formControl]="searchControl" placeholder="Search reservations..." class="form-control">
+    </div>
     <div class="card-body table-responsive">
       <table class="table table-hover m-b-0">
         <thead>
           <tr>
-            <th>Reservation #</th>
-            <th>Customer</th>
-            <th>Arrival Time</th>
-            <th>Status</th>
-            <th>Total Price</th>
+            <th (click)="sortBy('number')">
+              Reservation #
+              <mat-icon [class.active-sort]="sortColumn === 'number'">
+                {{ sortColumn === 'number' ? (sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
+              </mat-icon>
+            </th>
+            <th (click)="sortBy('customer')">
+              Customer
+              <mat-icon [class.active-sort]="sortColumn === 'customer'">
+                {{ sortColumn === 'customer' ? (sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
+              </mat-icon>
+            </th>
+            <th (click)="sortBy('arrivalTimeFrom')">
+              Arrival Time
+              <mat-icon [class.active-sort]="sortColumn === 'arrivalTimeFrom'">
+                {{ sortColumn === 'arrivalTimeFrom' ? (sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
+              </mat-icon>
+            </th>
+            <th (click)="sortBy('status')">
+              Status
+              <mat-icon [class.active-sort]="sortColumn === 'status'">
+                {{ sortColumn === 'status' ? (sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
+              </mat-icon>
+            </th>
+            <th (click)="sortBy('totalTransactionsAmount')">
+              Total Price
+              <mat-icon [class.active-sort]="sortColumn === 'totalTransactionsAmount'">
+                {{ sortColumn === 'totalTransactionsAmount' ? (sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more' }}
+              </mat-icon>
+            </th>
             <th>Verified</th>
           </tr>
         </thead>
+        
         <tbody>
-          <tr *ngFor="let reservation of reservations" (click)="showDetails(reservation)">
+          <tr *ngFor="let reservation of filteredReservations" (click)="showDetails(reservation)">
             <td>{{ reservation.number }}</td>
             <td>{{ reservation.customer.name || 'N/A' }}</td>
             <td>{{ formatDate(reservation.arrivalTimeFrom) }}</td>
@@ -49,6 +78,23 @@
             </td>
           </tr>
         </tbody>
+
+        <div class="pagination-controls" *ngIf="totalPages() > 1">
+          <button mat-icon-button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 0">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <span>Page {{ currentPage + 1 }} of {{ totalPages() }}</span>
+          <button mat-icon-button (click)="changePage(currentPage + 1)" [disabled]="currentPage + 1 >= totalPages()">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+        <div class="page-jump">
+          <label>Go to page:</label>
+          <input type="number" [(ngModel)]="inputPage" min="1" [max]="totalPages()" />
+
+          <button mat-button (click)="goToPage(inputPage)">Go</button>
+        </div>
+        
       </table>
     </div>
   </div>

@@ -122,3 +122,55 @@ mat-icon {
     display: block;
   }
 }
+.table-controls {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-controls input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  max-width: 250px;
+}
+
+.pagination-controls {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+th {
+  cursor: pointer;
+  user-select: none;
+}
+
+th mat-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+th mat-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-left: 4px;
+  color: gray;
+}
+
+th mat-icon.active-sort {
+  color: black;
+}
+
+.page-jump {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-jump input {
+  width: 60px;
+  padding: 4px 6px;
+}

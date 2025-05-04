@@ -14,8 +14,8 @@ import { FormsModule } from '@angular/forms';
 export class LoginComponent {
   password = '';
   username = '';
-  isLoading = false; // Added loading state
-  errorMessage = ''; // Added error message
+  isLoading = false; 
+  errorMessage = ''; 
 
   constructor(
     private loginService: LoginService,
@@ -78,16 +78,6 @@ export class LoginComponent {
 //   ()=>{ alert('Login failed')});
 //     }
 // }
-
-
-
-
-
-
-
-
-
-
 
 
 // // import { Component } from '@angular/core';
