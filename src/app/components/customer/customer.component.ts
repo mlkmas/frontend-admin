@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CustomersService } from '../../services/customer.service';
-import { Customer } from '../../models/customer.model'; 
+import { Customer, CustomerModel } from '../../models/customer.model'; 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
@@ -33,13 +33,8 @@ sortDirection: 'asc' | 'desc' = 'asc';
   }
   getAllCustomers() {
     this.customersService.getAllCustomers().subscribe({
-      next: (data: Customer[]) => {
-        this.customers = data.map(customer => ({
-          ...customer,
-          name: customer.name || customer.displayName || 'No Name',
-          email: customer.email || '',
-          phoneNumber: customer.phoneNumber || ''
-        }));
+      next: (data: any[]) => {
+        this.customers = data.map(CustomerModel.fromJson);  // <— Now uses the class
         this.isLoading = false;
       },
       error: (error) => {
@@ -48,6 +43,7 @@ sortDirection: 'asc' | 'desc' = 'asc';
       }
     });
   }
+  
 
   toggleSuspension(customer: Customer) {
     const newSuspendedState = !customer.isSuspended;

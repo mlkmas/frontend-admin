@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PartnerDetails } from '../../models/partner-details.model';
 import { Package, Question } from '../../models/package.model';
+import { DefaultImgDirective } from '../../directives/default-img.directive';
 
 @Component({
   selector: 'app-partner-details',
@@ -31,6 +32,7 @@ import { Package, Question } from '../../models/package.model';
     MatListModule,
     MatFormFieldModule,
     MatInputModule, 
+    DefaultImgDirective
   ],
   templateUrl: './partner-details.component.html',
   styleUrls: ['./partner-details.component.css']
@@ -48,6 +50,7 @@ export class PartnerDetailsComponent {
   packageError: string | null = null;
   selectedPackage: Package | null = null;
   newQuestionText = '';
+  defaultImage: string = 'assets/defaultImg.jpg';
   
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { partner: Partner },

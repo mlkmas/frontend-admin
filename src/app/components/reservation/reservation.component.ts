@@ -70,7 +70,7 @@ export class ReservationComponent implements OnInit {
           }));
     
           this.reservations = enhanced;
-          this.originalReservations = [...enhanced]; // <-- FIXED HERE
+          this.originalReservations = [...enhanced]; 
     
           this.applyFilters(); 
           this.isLoading = false;

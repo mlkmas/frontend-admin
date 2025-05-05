@@ -42,10 +42,9 @@
                 </div>
               </td>
           <td class="customer-avatar-cell">
-            <img 
+            <img [appDefaultImg]="customer.photoUrl"
             [defaultImage]="defaultImage"
-              [appDefaultImg]="customer.photoUrl"
-        
+             
               alt="{{ customer.name }}" 
               class="customer-avatar-img" />
           </td>

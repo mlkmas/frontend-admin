@@ -16,8 +16,9 @@
   <div *ngIf="partner" class="partner-content">
     <div class="header-section">
       <div class="profile-header">
-        <img [src]="partner.photoUrl || 'assets/default-profile.png'" 
-             alt="Profile image" 
+        <img  [appDefaultImg]="partner.photoUrl"
+        [defaultImage]="defaultImage"
+        alt="{{ partner.name }}" 
              class="profile-image">
         <div class="profile-info">
           <h2>{{ partner.name }}</h2>

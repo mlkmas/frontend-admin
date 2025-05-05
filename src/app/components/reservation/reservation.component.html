@@ -74,10 +74,10 @@
           <tr *ngFor="let reservation of filteredReservations" (click)="showDetails(reservation)">
             <td>{{ reservation.number }}</td>
             <td>{{ reservation.customer.name || 'N/A' }}</td>
-            <td>{{ formatDate(reservation.arrivalTimeFrom) }}</td>
+            <td>{{ formatDate(reservation.arrivalTimeFrom || '') }}</td>
             <td>
               <span class="status-badge {{reservation.statusClass}}">
-                {{ reservation.lastReservationEvents.reservationStatus || 'N/A' }}
+                {{ reservation.lastReservationEvents?.reservationStatus || 'N/A' }}
               </span>
             </td>
             <td>{{ reservation.totalTransactionsAmount | currency }}</td>
