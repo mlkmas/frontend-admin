@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormControl, ReactiveFormsModule } from '@angular/forms'; // ADD THIS
 import { MatPaginatorModule } from '@angular/material/paginator'; // ADD THIS
 import { FormsModule } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 
 interface EnhancedReservation extends Reservation {
@@ -33,6 +34,8 @@ interface EnhancedReservation extends Reservation {
 })
 export class ReservationComponent implements OnInit {
   reservations: EnhancedReservation[] = [];
+  originalReservations: EnhancedReservation[] = [];
+
   filteredReservations: EnhancedReservation[] = [];
   selectedReservation: EnhancedReservation | null = null;
   isLoading = true;
@@ -50,31 +53,36 @@ export class ReservationComponent implements OnInit {
 
    ngOnInit(): void {
     this.loadReservations();
-    this.searchControl.valueChanges.subscribe(() => this.applyFilters());
-  }
+    this.searchControl.valueChanges
+    .pipe(debounceTime(300))
+    .subscribe(() => this.applyFilters()); }
 
-  loadReservations(): void {
-    this.isLoading = true;
-    this.error = null;
+    loadReservations(): void {
+      this.isLoading = true;
+      this.error = null;
     
-    this.reservationService.getAllReservations().subscribe({
-      next: (data) => {
-        this.reservations = data.map(res => ({
-          ...res,
-          verified: this.isReservationVerified(res),
-          statusClass: this.getStatusClass(res.lastReservationEvents?.reservationStatus)
-        }));
-
-        this.applyFilters(); 
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load reservations. Please try again.';
-        this.isLoading = false;
-        console.error(err);
-      }
-    });
-  }
+      this.reservationService.getAllReservations().subscribe({
+        next: (data) => {
+          const enhanced = data.map(res => ({
+            ...res,
+            verified: this.isReservationVerified(res),
+            statusClass: this.getStatusClass(res.lastReservationEvents?.reservationStatus)
+          }));
+    
+          this.reservations = enhanced;
+          this.originalReservations = [...enhanced]; // <-- FIXED HERE
+    
+          this.applyFilters(); 
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load reservations. Please try again.';
+          this.isLoading = false;
+          console.error(err);
+        }
+      });
+    }
+    
 
   showDetails(reservation: EnhancedReservation): void {
     this.selectedReservation = reservation;
@@ -167,4 +175,19 @@ export class ReservationComponent implements OnInit {
       this.applyFilters(); // or update the paginated data
     }
   }
+ 
+  resetFilters(): void {
+    this.reservations = [...this.originalReservations];
+this.searchControl.setValue('');
+this.sortColumn = '';
+this.sortDirection = 'asc';
+this.currentPage = 0;
+this.inputPage = 1;
+this.selectedReservation = null;
+this.applyFilters();
+
+  }
+  
+  
+  
 }

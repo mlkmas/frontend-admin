@@ -1,18 +1,42 @@
 <!-- customer.component.html -->
+
+<div class="customer-controls">
+  <input 
+    type="text" 
+    placeholder="Search customers..." 
+    [(ngModel)]="searchTerm"
+    class="search-input"
+  />
+  <button class="reset-btn" (click)="resetFilters()">Reset</button>
+</div>
+
+
 <div class="customer-table-container">
     <table class="customer-table">
       <thead>
         <tr>
-          <th>Name</th>
+          <th (click)="toggleSort('name')">
+            Name
+            <span [class]="getSortClass('name')"></span>
+          </th>
           <th>Avatar</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Status</th>
+          <th (click)="toggleSort('email')">
+            Email
+            <span [class]="getSortClass('email')"></span>
+          </th>
+          <th (click)="toggleSort('phoneNumber')">
+            Phone
+            <span [class]="getSortClass('phoneNumber')"></span>
+          </th>
+          <th (click)="toggleSort('isSuspended')">
+            Status
+            <span [class]="getSortClass('isSuspended')"></span>
+          </th>
         </tr>
       </thead>
+      
       <tbody>
-        <tr *ngFor="let customer of customers" class="customer-row">
-            <td class="customer-name-cell">
+        <tr *ngFor="let customer of filteredCustomers" class="customer-row">  <td class="customer-name-cell">
                 <div class="customer-name-wrapper">
                   {{ customer.name }}
                 </div>
@@ -46,7 +70,15 @@
         </tr>
       </tbody>
     </table>
-  
+  <!-- Pagination controls -->
+<div class="pagination-controls">
+  <button 
+    *ngFor="let page of [].constructor(totalPages); let i = index" 
+    (click)="goToPage(i + 1)" 
+    [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+</div>
     <div *ngIf="isLoading" class="loading">Loading customers...</div>
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
