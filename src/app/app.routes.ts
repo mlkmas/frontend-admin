@@ -4,7 +4,6 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component'; 
 import { PartnerComponent } from './components/partner/partner.component';
 import { CustomerComponent } from './components/customer/customer.component';
-import { HomeDashboardComponent } from './components/home-dashboard/home-dashboard.component';
 import{ PartnerDetailsComponent } from './components/partner-details/partner-details.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { ReservationComponent } from './components/reservation/reservation.component';
@@ -17,7 +16,7 @@ export const routes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: HomeDashboardComponent },
+      { path: '', redirectTo: 'statistics', pathMatch: 'full' },
       { path: 'statistics', component: StatisticsComponent },
       { path: 'partner', component: PartnerComponent },
       { path: 'customer', component: CustomerComponent },
