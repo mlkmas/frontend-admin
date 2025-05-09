@@ -1,19 +1,22 @@
-<nav class="navbar" [class.collapsed]="isNavbarCollapsed">
-  <div class="navbar-left">
-    <button class="toggle-btn" (click)="toggleNavbar()">
-      <i class="fas" [ngClass]="{ 'fa-chevron-up': !isNavbarCollapsed, 'fa-chevron-down': isNavbarCollapsed }"></i>
-    </button>
-    <span class="logo">WOSH</span>
-  </div>
+<div class="navbar-container">
+  <button class="toggle-btn" (click)="toggleNavbar()">
+    <i class="fas" [ngClass]="{ 'fa-chevron-up': !isNavbarCollapsed, 'fa-chevron-down': isNavbarCollapsed }"></i>
+  </button>
+  
+  <div class="navbar" *ngIf="!isNavbarCollapsed">
+    <div class="navbar-left">
+      <span class="logo">WOSH</span>
+    </div>
 
-  <div class="navbar-right" *ngIf="!isNavbarCollapsed">
-    <div class="user-menu">
-      <span class="username">Admin User</span>
-      <button class="logout-button" (click)="logout()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-          <path d="M16 17v-3h-3v-2h3V9l4 3.5L16 16zM5 5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h7v-2H5V5z"/>
-        </svg>
-      </button>
+    <div class="navbar-right">
+      <div class="user-menu">
+        <span class="username">Admin User</span>
+        <button class="logout-button" (click)="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M16 17v-3h-3v-2h3V9l4 3.5L16 16zM5 5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h7v-2H5V5z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-</nav>
+</div>
