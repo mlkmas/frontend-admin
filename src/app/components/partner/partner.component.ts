@@ -6,16 +6,26 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
 import { PartnerDetailsComponent } from './../partner-details/partner-details.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog,MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+
+
+type PartnerStatus = 'pending' | 'active' | 'suspended';
 
 @Component({
   selector: 'app-partner',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,RouterModule, DefaultImgDirective,MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule, DefaultImgDirective,MatIconModule,MatDialogModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatButtonModule],
   templateUrl: './partner.component.html',
   styleUrls: ['./partner.component.css']
 })
@@ -25,17 +35,31 @@ export class PartnerComponent implements OnInit {
   errorMessage: string | null = null;
   defaultImage: string = 'assets/defaultImg.jpg';
   actionInProgress: string | null = null;
-  searchControl = new FormControl('');
   originalPartners: Partner[] = [];
-  sortColumn: string = '';
+  filteredPartners: Partner[] = [];
+
+  // Form Controls
+  searchControl = new FormControl('');
+  statusFilterControl = new FormControl<PartnerStatus[]>([]);
+  phoneFilterControl = new FormControl('all');
+  
+  // Sorting
+  sortColumn = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private partnersService: PartnersService ,private dialog: MatDialog) {}
 
   ngOnInit() {
     this.getAllPartners();
+   // React to filter changes
     this.searchControl.valueChanges
       .pipe(debounceTime(300))
+      .subscribe(() => this.applyFilters());
+      
+    this.statusFilterControl.valueChanges
+      .subscribe(() => this.applyFilters());
+      
+    this.phoneFilterControl.valueChanges
       .subscribe(() => this.applyFilters());
   }
 
@@ -52,6 +76,7 @@ export class PartnerComponent implements OnInit {
           phoneNumber: partner.phoneNumber || 'No Phone'
         }));
         this.originalPartners = [...this.partners];
+        this.filteredPartners = [...this.partners];
         this.applyFilters();
         this.isLoading = false;
       },
@@ -119,46 +144,60 @@ export class PartnerComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.originalPartners];
     
-    // Apply search
-    if (this.searchControl.value) {
-      const term = this.searchControl.value.toLowerCase();
+    // Apply search filter
+    const searchTerm = this.searchControl.value?.toLowerCase() || '';
+    if (searchTerm) {
       filtered = filtered.filter(partner =>
-        partner.name.toLowerCase().includes(term) ||
-        partner.email.toLowerCase().includes(term) ||
-        (!partner.isApproved ? 'pending' : partner.isSuspended ? 'suspended' : 'active').includes(term)
+        partner.name.toLowerCase().includes(searchTerm) ||
+        partner.email.toLowerCase().includes(searchTerm) ||
+        partner.phoneNumber.toLowerCase().includes(searchTerm)
       );
     }
-
-    // Apply sorting
-    if (this.sortColumn) {
-      filtered = filtered.sort((a, b) => {
-        const aValue = a[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
-        const bValue = b[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
-        const compare = aValue.localeCompare(bValue);
-        return this.sortDirection === 'asc' ? compare : -compare;
+    
+    // Apply status filter
+    const statusFilters = this.statusFilterControl.value || [];
+    if (statusFilters.length > 0) {
+      filtered = filtered.filter(partner => {
+        const status = !partner.isApproved ? 'pending' : 
+                      partner.isSuspended ? 'suspended' : 'active';
+        return statusFilters.includes(status as PartnerStatus);
       });
     }
+    
+    // Apply phone filter
+    const phoneFilter = this.phoneFilterControl.value;
+    if (phoneFilter === 'with') {
+      filtered = filtered.filter(partner => partner.phoneNumber && partner.phoneNumber !== 'No Phone');
+    } else if (phoneFilter === 'without') {
+      filtered = filtered.filter(partner => !partner.phoneNumber || partner.phoneNumber === 'No Phone');
+    }
+    
+    // Apply sorting
+    filtered = filtered.sort((a, b) => {
+      const aValue = a[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
+      const bValue = b[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
+      const compare = aValue.localeCompare(bValue);
+      return this.sortDirection === 'asc' ? compare : -compare;
+    });
+    
+    this.filteredPartners = filtered;
+  }
 
-    this.partners = filtered;
+  toggleSortDirection(): void {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    this.applyFilters();
   }
 
   resetFilters(): void {
     this.searchControl.setValue('');
-    this.sortColumn = '';
+    this.statusFilterControl.setValue([]);
+    this.phoneFilterControl.setValue('all');
+    this.sortColumn = 'name';
     this.sortDirection = 'asc';
-    this.partners = [...this.originalPartners];
-  }
-
-  toggleSort(column: string): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
-    }
     this.applyFilters();
   }
 
+  
   
   
 }

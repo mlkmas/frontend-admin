@@ -191,3 +191,260 @@
 .error {
   color: #f44336;
 }
+
+.partners-controls {
+  display: flex;
+  max-height: 100px; 
+  max-width: 1000px;
+  align-items: center;
+  justify-content: space-between; /* Spread items evenly across the line */
+  gap: 1rem; /* Add spacing between elements */
+  padding: 12px 24px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 1rem auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap; /* Prevent wrapping */
+}
+
+.search-container {
+  flex: 1; /* Allow the search input to take up available space */
+  min-width: 200px; /* Ensure a minimum width for the search input */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+.search-input:focus {
+  border-color: #2196F3;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  font-size: 20px;
+  color: #888;
+  transform: translateY(-50%);
+}
+
+.filter-dropdown {
+  background: white;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.sort-button, .reset-button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.filter-dropdown {
+  background: white;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: transparent;
+}
+
+.filter-dropdown .mat-form-field-infix {
+  padding: 0.5em 0;
+  border-top: 0;
+}
+
+
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Add spacing between sort buttons */
+  flex-shrink: 0; /* Prevent shrinking of sort buttons */
+}
+
+.sort-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+
+.sort-button:hover {
+  background-color: #f1f1f1;
+}
+
+.sort-button mat-icon {
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
+}
+
+
+/* Reset button */
+.reset-button {
+  background-color: #e0e0e0;
+  color: #333;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.reset-button:hover {
+  background-color: #d6d6d6;
+}
+
+.reset-button mat-icon {
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {.partners-controls {
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: center; /* Center items when wrapped */
+}
+
+.search-container {
+  width: 100%; /* Make the search input take full width */
+  margin-bottom: 1rem; /* Add spacing below the search input */
+}
+
+.sort-container {
+  width: 100%; /* Make sort buttons take full width */
+  justify-content: center; /* Center align sort buttons */
+}
+}
+
+/* Animation for sort direction change */
+@keyframes rotateUp {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-180deg); }
+}
+
+@keyframes rotateDown {
+  from { transform: rotate(-180deg); }
+  to { transform: rotate(0deg); }
+}
+
+.sort-button .asc {
+  animation: rotateDown 0.3s ease-out forwards;
+}
+
+.sort-button .desc {
+  animation: rotateUp 0.3s ease-out forwards;
+}
+
+/* Override existing search styles */
+.box {
+  position: relative;
+  display: inline-block;
+}
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 24px; /* Adjust based on your input height */
+  color: #1e293b;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input {
+  padding-left: 40px; /* Add space for the search icon */
+  padding: 10px;
+  width: 60px;
+  height: 60px;
+  background: none;
+  border: 2px solid #1e293b;
+  border-radius: 50px;
+  box-sizing: border-box;
+  font-family: Comic Sans MS, sans-serif;
+  font-size: 26px;
+  color: #1e293b;
+  outline: none;
+  transition: 0.5s;
+}
+
+.box:hover .input {
+  width: 350px;
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.box i {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  color: #1e293b;
+  transition: 0.2s;
+}
+
+.box:hover i {
+  opacity: 0;
+  z-index: -1;
+}
+
+/* Custom dropdown look (similar to Tailwind-like card style) */
+.custom-dropdown {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 0 8px;
+  font-size: 0.9rem;
+  transition: box-shadow 0.3s ease;
+  min-width: 200px;
+}
+
+.custom-dropdown:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.custom-dropdown.mat-form-field {
+  margin: 0;
+}
+
+.custom-dropdown .mat-form-field-flex {
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+.custom-dropdown .mat-form-field-outline {
+  border-color: #cfd8dc;
+}
+
+.custom-dropdown .mat-form-field-outline-thick {
+  border-width: 1px;
+}
+
+.custom-dropdown.mat-focused .mat-form-field-outline {
+  border-color: #1976d2;
+}
+
+.custom-dropdown .mat-select-arrow {
+  color: #1976d2;
+}
