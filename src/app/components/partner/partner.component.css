@@ -1,3 +1,4 @@
+/* Main Partners Grid */
 .partners-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -17,6 +18,7 @@
   }
 }
 
+/* Partner Cards */
 .partner-card {
   background: #fff;
   border-radius: 16px;
@@ -27,7 +29,8 @@
   align-items: center;
   text-align: center;
   transition: transform 0.3s ease;
-  height: 420px;
+  height: auto;
+  padding-bottom: 16px;
 }
 
 .partner-card:hover {
@@ -57,12 +60,6 @@
   margin-bottom: 4px;
 }
 
-.partner-role {
-  font-size: 0.95rem;
-  color: #666;
-  margin-bottom: 12px;
-}
-
 .partner-contact p {
   margin: 4px 0;
   color: #444;
@@ -80,17 +77,19 @@
   -webkit-box-orient: vertical;
 }
 
+/* Partner Actions */
 .partner-actions {
   display: flex;
   gap: 8px;
   margin-top: 12px;
   width: 100%;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .status-btn {
   color: white;
-  background-color: #28a745; /* Green for approve/active state */
+  background-color: #28a745;
   border-radius: 4px;
   font-size: 14px;
   padding: 8px 16px;
@@ -101,12 +100,10 @@
   transition: all 0.2s;
 }
 
-/* Pending state - Yellow */
 .status-btn.pending {
   background-color: #ffc107;
 }
 
-/* Suspended state - Red */
 .status-btn.suspended {
   background-color: #dc3545;
 }
@@ -116,12 +113,6 @@
   transform: translateY(-1px);
 }
 
-.status-btn[disabled] {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-/* Update the details button style */
 .details-btn {
   display: flex;
   align-items: center;
@@ -145,27 +136,238 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.details-btn mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* Make sure the buttons are properly aligned */
-.partner-actions {
+/* Controls Container */
+.partners-controls {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  width: 100%;
-  justify-content: center;
+  max-height: 65px;
+  max-width: 1000px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 8px 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 1rem auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
 }
 
-/* Adjust card height if needed */
-.partner-card {
-  /* ... existing styles ... */
-  height: auto; /* Changed from fixed height */
-  padding-bottom: 16px;
+/* Expanding Search Box */
+.box {
+  position: relative;
+  display: inline-block;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #444;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.input {
+  padding-left: 50px;
+  width: 60px;
+  height: 60px;
+  background: none;
+  border: 3px solid #444;
+  border-radius: 50px;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.box:hover .input {
+  width: 250px;
+  background: #fff;
+  border-radius: 10px;
+  border: 3px solid #444;
+  cursor: text;
+}
+
+/* Dropdown Styling */
+.custom-dropdown {
+  position: relative;
+  min-width: 140px;
+  height: 50px;
+  margin: 0 5px;
+}
+
+/* Remove all Material Design styling */
+.mat-form-field-appearance-fill .mat-form-field-underline {
+  display: none !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color:#d6d6d6;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Custom dropdown trigger */
+.custom-dropdown .mat-select-trigger {
+  background-color: #ffb8b8 !important; /* or #b8e1ff for phone */
+  color: #102770 !important;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: none !important;
+  padding: 0 16px !important;
+}
+
+/* Make the value text readable */
+.mat-select-value {
+  color: #102770 !important;
+  font-weight: 600;
+}
+
+/* Ensure panel isn't transparent */
+.mat-select-panel {
+  background-color: #fff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+
+/* Options inside the dropdown */
+.mat-select-panel .mat-option {
+  color: #333 !important;
+  background: #c4bfbf !important;
+}
+
+.mat-select-panel .mat-option:hover {
+  background-color: #ffeba7 !important;
+  color: #102770 !important;
+}
+
+.custom-dropdown .mat-select-trigger:hover {
+  box-shadow: 0 6px 20px rgba(255, 235, 167, 0.4) !important;
+}
+
+/* Dropdown arrow */
+.custom-dropdown .mat-select-arrow {
+  color: #102770 !important;
+  border: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: 10px !important;
+  position: relative !important;
+}
+
+.custom-dropdown .mat-select-arrow::after {
+  content: '▼';
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mat-select-panel .mat-option {
+  color: #fff !important;
+  font-size: 15px !important;
+  height: 40px !important;
+  padding: 0 20px !important;
+}
+
+.mat-select-panel .mat-option:hover {
+  background: #ffeba7 !important;
+  color: #102770 !important;
+}
+
+/* Status dropdown */
+.custom-dropdown.status-filter .mat-select-trigger {
+  background-color: #ffb8b8 !important;
+  box-shadow: 0 4px 15px rgba(255, 184, 184, 0.3) !important;
+}
+
+/* Phone dropdown */
+.custom-dropdown.phone-filter .mat-select-trigger {
+  background-color: #b8e1ff !important;
+  box-shadow: 0 4px 15px rgba(184, 225, 255, 0.3) !important;
+}
+
+.custom-dropdown.mat-focused .mat-select-trigger {
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.4);
+}
+
+
+/* Sort and Reset Buttons */
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-button, .reset-button {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.reset-button {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.sort-button:hover, .reset-button:hover {
+  background-color: #d6d6d6;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .partners-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: none;
+    padding: 12px;
+  }
+  
+  .box, .custom-dropdown {
+    min-width: 100%;
+    margin: 0;
+  }
+  
+  .input {
+    width: 100%;
+  }
+  
+  .box:hover .input {
+    width: 100%;
+  }
+  
+  .sort-container {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .btn-spinner {
@@ -179,272 +381,101 @@
   margin-left: 6px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading, .error {
-  padding: 16px;
-  text-align: center;
-}
-
-.error {
-  color: #f44336;
-}
-
-.partners-controls {
-  display: flex;
-  max-height: 100px; 
-  max-width: 1000px;
-  align-items: center;
-  justify-content: space-between; /* Spread items evenly across the line */
-  gap: 1rem; /* Add spacing between elements */
-  padding: 12px 24px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin: 1rem auto;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  flex-wrap: wrap; /* Prevent wrapping */
-}
-
-.search-container {
-  flex: 1; /* Allow the search input to take up available space */
-  min-width: 200px; /* Ensure a minimum width for the search input */
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 12px 10px 36px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: white;
-  transition: border-color 0.3s ease;
-}
-.search-input:focus {
-  border-color: #2196F3;
-  outline: none;
-}
-
-.search-icon {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  font-size: 20px;
-  color: #888;
-  transform: translateY(-50%);
-}
-
-.filter-dropdown {
-  background: white;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-
-.sort-button, .reset-button {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  white-space: nowrap; /* Prevent text wrapping */
-}
-
-.filter-dropdown {
-  background: white;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-
-.mat-form-field-wrapper {
-  padding-bottom: 0 !important;
-}
-
-.mat-form-field-appearance-fill .mat-form-field-flex {
-  background-color: transparent;
-}
-
-.filter-dropdown .mat-form-field-infix {
-  padding: 0.5em 0;
-  border-top: 0;
-}
-
-
-.sort-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* Add spacing between sort buttons */
-  flex-shrink: 0; /* Prevent shrinking of sort buttons */
-}
-
-.sort-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-
-
-.sort-button:hover {
-  background-color: #f1f1f1;
-}
-
-.sort-button mat-icon {
-  font-size: 1rem;
-  height: 1rem;
-  width: 1rem;
-}
-
-
-/* Reset button */
-.reset-button {
-  background-color: #e0e0e0;
-  color: #333;
-  font-size: 0.9rem;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s ease;
-}
-
-.reset-button:hover {
-  background-color: #d6d6d6;
-}
-
-.reset-button mat-icon {
-  font-size: 1.1rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {.partners-controls {
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  justify-content: center; /* Center items when wrapped */
-}
-
-.search-container {
-  width: 100%; /* Make the search input take full width */
-  margin-bottom: 1rem; /* Add spacing below the search input */
-}
-
-.sort-container {
-  width: 100%; /* Make sort buttons take full width */
-  justify-content: center; /* Center align sort buttons */
-}
-}
-
-/* Animation for sort direction change */
-@keyframes rotateUp {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-180deg); }
-}
-
-@keyframes rotateDown {
-  from { transform: rotate(-180deg); }
-  to { transform: rotate(0deg); }
-}
-
-.sort-button .asc {
-  animation: rotateDown 0.3s ease-out forwards;
-}
-
-.sort-button .desc {
-  animation: rotateUp 0.3s ease-out forwards;
-}
-
-/* Override existing search styles */
-.box {
+.custom-dropdown-wrapper {
   position: relative;
-  display: inline-block;
+  width: 180px;
+  filter: url(#goo);
 }
-.search-icon {
-  position: absolute;
-  top: 50%;
-  left: 15px;
-  transform: translateY(-50%);
-  font-size: 24px; /* Adjust based on your input height */
-  color: #1e293b;
-  width: 24px;
-  height: 24px;
+
+.dropdown-face,
+.dropdown-items {
+  background-color: #b8e1ff;
+  padding: 14px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #102770;
+  user-select: none;
+}
+
+.dropdown-face {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  position: relative;
 }
 
-.input {
-  padding-left: 40px; /* Add space for the search icon */
-  padding: 10px;
-  width: 60px;
-  height: 60px;
-  background: none;
-  border: 2px solid #1e293b;
-  border-radius: 50px;
-  box-sizing: border-box;
-  font-family: Comic Sans MS, sans-serif;
-  font-size: 26px;
-  color: #1e293b;
-  outline: none;
-  transition: 0.5s;
+.dropdown-arrow {
+  border-bottom: 2px solid #102770;
+  border-right: 2px solid #102770;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  transition: 0.3s;
 }
 
-.box:hover .input {
-  width: 350px;
-  background: #e2e8f0;
-  border-radius: 10px;
+.dropdown-toggle:checked + .dropdown-face .dropdown-arrow {
+  transform: rotate(-135deg);
 }
 
-.box i {
-  position: absolute;
-  top: 50%;
-  right: 15px;
-  transform: translate(-50%, -50%);
-  font-size: 26px;
-  color: #1e293b;
-  transition: 0.2s;
-}
-
-.box:hover i {
-  opacity: 0;
-  z-index: -1;
-}
-
-/* Custom dropdown look (similar to Tailwind-like card style) */
-.custom-dropdown {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 0 8px;
-  font-size: 0.9rem;
-  transition: box-shadow 0.3s ease;
-  min-width: 200px;
-}
-
-.custom-dropdown:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-}
-
-.custom-dropdown.mat-form-field {
+.dropdown-items {
   margin: 0;
+  padding: 10px 0;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  list-style: none;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
-.custom-dropdown .mat-form-field-flex {
-  background-color: transparent;
-  border-radius: 8px;
+.dropdown-items li {
+  padding: 10px 16px;
+  color: #102770;
+  background-color: #fff;
+  transition: background 0.2s;
 }
 
-.custom-dropdown .mat-form-field-outline {
-  border-color: #cfd8dc;
+.dropdown-items li:hover {
+  background-color: #b8e1ff;
 }
 
-.custom-dropdown .mat-form-field-outline-thick {
-  border-width: 1px;
+.dropdown-toggle {
+  display: none;
 }
 
-.custom-dropdown.mat-focused .mat-form-field-outline {
-  border-color: #1976d2;
+.dropdown-toggle:checked ~ .dropdown-items {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
-.custom-dropdown .mat-select-arrow {
-  color: #1976d2;
+/* Optional: apply different color for phone dropdown */
+.custom-dropdown-wrapper.phone {
+  width: 180px;
+}
+.custom-dropdown-wrapper.phone .dropdown-face,
+.custom-dropdown-wrapper.phone .dropdown-items {
+  background-color: #b8e1ff;
+}
+/* Phone Dropdown Specific */
+.custom-dropdown-wrapper.phone {
+  width: 180px;
+}
+
+.custom-dropdown-wrapper.phone .dropdown-face,
+.custom-dropdown-wrapper.phone .dropdown-items {
+  background-color: #b8e1ff;
+  color: #102770;
+  box-shadow: 0 12px 35px rgba(184, 225, 255, 0.2);
+}
+
+.custom-dropdown-wrapper.phone .dropdown-items li:hover {
+  background-color: #d6efff;
 }

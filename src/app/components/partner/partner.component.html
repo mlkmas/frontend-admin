@@ -15,26 +15,34 @@
    
   </div>
   
+<!-- Status Filter Dropdown -->
+<div class="custom-dropdown-wrapper">
+  <input type="checkbox" id="statusDropdown" class="dropdown-toggle" />
+  <label for="statusDropdown" class="dropdown-face">
+    <span class="selected-text">Select Status</span>
+    <span class="dropdown-arrow"></span>
+  </label>
+  <ul class="dropdown-items">
+    <li (click)="statusFilterControl.setValue(['pending'])">Pending</li>
+    <li (click)="statusFilterControl.setValue(['active'])">Active</li>
+    <li (click)="statusFilterControl.setValue(['suspended'])">Suspended</li>
+  </ul>
+</div>
 
- <!-- Status Filter Dropdown -->
-<mat-form-field appearance="fill" class="custom-dropdown">
-  <mat-label>Status</mat-label>
-  <mat-select [formControl]="statusFilterControl" multiple>
-    <mat-option value="pending">Pending</mat-option>
-    <mat-option value="active">Active</mat-option>
-    <mat-option value="suspended">Suspended</mat-option>
-  </mat-select>
-</mat-form-field>
 
- <!-- Phone Filter Dropdown -->
-<mat-form-field appearance="fill" class="custom-dropdown">
-  <mat-label>Phone</mat-label>
-  <mat-select [formControl]="phoneFilterControl">
-    <mat-option value="all">All</mat-option>
-    <mat-option value="with">With Phone</mat-option>
-    <mat-option value="without">Without Phone</mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="custom-dropdown-wrapper phone">
+  <input type="checkbox" id="phoneDropdown" class="dropdown-toggle" />
+  <label for="phoneDropdown" class="dropdown-face">
+    <span class="selected-text">Select Phone</span>
+    <span class="dropdown-arrow"></span>
+  </label>
+  <ul class="dropdown-items">
+    <li (click)="phoneFilterControl.setValue('all')">All</li>
+    <li (click)="phoneFilterControl.setValue('with')">With Phone</li>
+    <li (click)="phoneFilterControl.setValue('without')">Without Phone</li>
+  </ul>
+</div>
+
 
   
   <!-- Sort Controls -->

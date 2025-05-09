@@ -1,36 +1,27 @@
 <div class="sidebar" [class.collapsed]="isCollapsed">
   <button class="toggle-btn" (click)="toggleSidebar()">
-    <i class="fas" [ngClass]="{ 'fa-chevron-left': !isCollapsed, 'fa-chevron-right': isCollapsed }"></i>
+    <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
   </button>
   
-    <div class="sidebar-menu">
-     
-
-      <button class="menu-item" routerLink="/home/statistics" routerLinkActive="active">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-        </svg>
-        <span>Statistics</span>
-      </button>
-      
-      <button class="menu-item" routerLink="/home/partner" routerLinkActive="active">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-        </svg>
-        <span>Partners</span>
-      </button>
-      
-      <button class="menu-item" routerLink="/home/customer" routerLinkActive="active">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-        </svg>
-        <span>Customers</span>
-      </button>
-       <button class="menu-item" routerLink="/home/reservation" routerLinkActive="active">
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
-        </svg>
-        <span>Reservations</span>
-      </button>
-
-    </div>
+  <div class="sidebar-menu">
+    <button class="menu-item" routerLink="/home/statistics" routerLinkActive="active">
+      <mat-icon>bar_chart</mat-icon>
+      <span>Statistics</span>
+    </button>
+    
+    <button class="menu-item" routerLink="/home/partner" routerLinkActive="active">
+      <mat-icon>handshake</mat-icon>
+      <span>Partners</span>
+    </button>
+    
+    <button class="menu-item" routerLink="/home/customer" routerLinkActive="active">
+      <mat-icon>people</mat-icon>
+      <span>Customers</span>
+    </button>
+    
+    <button class="menu-item" routerLink="/home/reservation" routerLinkActive="active">
+      <mat-icon>event_available</mat-icon>
+      <span>Reservations</span>
+    </button>
+  </div>
+</div>
