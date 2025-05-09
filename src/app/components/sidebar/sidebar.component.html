@@ -1,4 +1,8 @@
-<div class="sidebar">
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    <i class="fas" [ngClass]="{ 'fa-chevron-left': !isCollapsed, 'fa-chevron-right': isCollapsed }"></i>
+  </button>
+  
     <div class="sidebar-menu">
       <button class="menu-item" routerLink="/home" routerLinkActive="active">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -35,4 +39,3 @@
       </button>
 
     </div>
-  </div>

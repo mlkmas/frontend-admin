@@ -1,8 +1,12 @@
-<nav class="navbar">
+<nav class="navbar" [class.collapsed]="isNavbarCollapsed">
   <div class="navbar-left">
+    <button class="toggle-btn" (click)="toggleNavbar()">
+      <i class="fas" [ngClass]="{ 'fa-chevron-up': !isNavbarCollapsed, 'fa-chevron-down': isNavbarCollapsed }"></i>
+    </button>
     <span class="logo">WOSH</span>
   </div>
-  <div class="navbar-right">
+
+  <div class="navbar-right" *ngIf="!isNavbarCollapsed">
     <div class="user-menu">
       <span class="username">Admin User</span>
       <button class="logout-button" (click)="logout()">

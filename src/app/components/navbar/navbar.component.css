@@ -47,3 +47,16 @@
   height: 20px;
   flex-shrink: 0;
 }
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 12px;
+  color: #555;
+}
+
+.toggle-btn:hover {
+  color: #000;
+}
