@@ -1,96 +1,138 @@
 <div class="package-management-container">
-    <h2>Package Management</h2>
-  
-    <div *ngIf="isLoading" class="loading">
-      <mat-spinner diameter="50"></mat-spinner>
-    </div>
-  
-    <div *ngIf="error" class="error">
-      {{ error }}
-      <button mat-button (click)="loadPackages()">Retry</button>
-    </div>
-  
-    <div class="package-list">
+  <h2>Package Management</h2>
+
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+    <button mat-button (click)="error = null">Dismiss</button>
+  </div>
+
+  <div class="package-list">
+    <div class="header-row">
       <h3>Packages</h3>
-      <table mat-table [dataSource]="packages" class="mat-elevation-z1">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let pkg">{{ pkg.packageName }}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Price</th>
-          <td mat-cell *matCellDef="let pkg">{{ pkg.priceDTO?.totalPrice | currency:pkg.currency }}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let pkg">
-            <button mat-icon-button (click)="selectPackage(pkg)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="removePackage(pkg.id)">
+      <button mat-raised-button color="primary" (click)="showCreatePackageForm()">
+        <mat-icon>add</mat-icon>
+        Add Package
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="packages" class="mat-elevation-z1">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let pkg">{{ pkg.packageName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let pkg">
+          {{ pkg.priceDTO?.totalPrice | currency:pkg.currency }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let pkg">
+          <button mat-icon-button (click)="selectPackage(pkg)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="removePackage(pkg.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <!-- Selected Package Details -->
+  <div *ngIf="selectedPackage" class="selected-package">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ selectedPackage.packageName }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ selectedPackage.priceDTO.totalPrice | currency:selectedPackage.currency }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <h4>Questions</h4>
+        <mat-list>
+          <mat-list-item *ngFor="let question of selectedPackage.questions">
+            {{ question.text }}
+            <button mat-icon-button color="warn" (click)="removeQuestion(question.id)">
               <mat-icon>delete</mat-icon>
             </button>
-          </td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
-  
-    <div class="package-details" *ngIf="selectedPackage">
-      <h3>Edit Package: {{ selectedPackage.packageName }}</h3>
-      
-      <div class="questions-section">
-        <h4>Questions</h4>
-        <table mat-table [dataSource]="selectedPackage.questions" class="mat-elevation-z1">
-          <ng-container matColumnDef="text">
-            <th mat-header-cell *matHeaderCellDef>Question</th>
-            <td mat-cell *matCellDef="let question">{{ question.text }}</td>
-          </ng-container>
-  
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let question">{{ question.type }}</td>
-          </ng-container>
-  
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let question">
-              <button mat-icon-button color="warn" (click)="removeQuestion(question.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-  
-          <tr mat-header-row *matHeaderRowDef="questionsDisplayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: questionsDisplayedColumns;"></tr>
-        </table>
-  
-        <div class="add-question">
-          <mat-form-field appearance="outline">
-            <mat-label>New Question</mat-label>
-            <input matInput [(ngModel)]="newQuestionText">
-          </mat-form-field>
-          <button mat-raised-button color="primary" (click)="addQuestion()">Add Question</button>
+          </mat-list-item>
+        </mat-list>
+
+        <div *ngIf="!showQuestionForm">
+          <button mat-raised-button color="primary" (click)="showAddQuestionForm()">
+            <mat-icon>add</mat-icon>
+            Add Question
+          </button>
         </div>
-  
-        <button mat-raised-button color="primary" (click)="saveQuestions()">Save Questions</button>
-      </div>
-    </div>
-  
-    <div class="new-package">
-      <h3>Add New Package</h3>
-      <mat-form-field appearance="outline">
-        <mat-label>Package Name</mat-label>
-        <input matInput [(ngModel)]="newPackage.packageName">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Currency</mat-label>
-        <input matInput [(ngModel)]="newPackage.currency">
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="addNewPackage()">Add Package</button>
-    </div>
+
+        <div *ngIf="showQuestionForm" class="question-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Question Text</mat-label>
+            <input matInput [(ngModel)]="newQuestion.text">
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-button (click)="showQuestionForm = false">Cancel</button>
+            <button mat-raised-button color="primary" (click)="addQuestion()">Add</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
+
+  <!-- New Package Form -->
+  <div *ngIf="showNewPackageForm" class="new-package-form">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Create New Package</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-form-field appearance="outline">
+          <mat-label>Package Name</mat-label>
+          <input matInput [(ngModel)]="newPackage.packageName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <input matInput [(ngModel)]="newPackage.currency" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Service</mat-label>
+          <mat-select [(ngModel)]="selectedServiceId" required>
+            <mat-option *ngFor="let service of availableServices" [value]="service.id">
+              {{ service.name }} ({{ service.price | currency:service.currency }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="availableProducts.length > 0">
+          <mat-label>Select Product (Optional)</mat-label>
+          <mat-select [(ngModel)]="selectedProductId">
+            <mat-option *ngFor="let product of availableProducts" [value]="product.id">
+              {{ product.name }} ({{ product.price | currency:product.currency }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button (click)="showNewPackageForm = false">Cancel</button>
+          <button mat-raised-button color="primary" (click)="addNewPackage()">Create Package</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

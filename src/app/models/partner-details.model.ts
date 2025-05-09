@@ -1,4 +1,4 @@
-import { Region, RegionModel } from './package.model'; // Import Region and RegionModel
+import { Region, RegionModel } from './package.model'; // This should now work
 
 export interface PartnerDetails {
   id: string;

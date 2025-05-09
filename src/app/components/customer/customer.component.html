@@ -42,11 +42,12 @@
                 </div>
               </td>
           <td class="customer-avatar-cell">
-            <img [appDefaultImg]="customer.photoUrl"
+            <img 
+            [appDefaultImg]="customer.photoUrl"
             [defaultImage]="defaultImage"
-             
-              alt="{{ customer.name }}" 
-              class="customer-avatar-img" />
+            alt="{{ customer.name }}" 
+            class="customer-avatar-img" />
+        
           </td>
           <td class="customer-email-cell">
             <a *ngIf="customer.email" [href]="'mailto:' + customer.email" class="customer-email-link">

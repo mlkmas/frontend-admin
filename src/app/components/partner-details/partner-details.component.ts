@@ -86,17 +86,15 @@ export class PartnerDetailsComponent {
     this.loadExtraDetails();
   }
   loadPackages(): void {
-    this.packageLoading = true;
-    this.packageError = null;
-    
+    this.isLoading = true;
     this.partnersService.getPartnerPackages(this.partner.id).subscribe({
       next: (data) => {
-        this.packages = data;
-        this.packageLoading = false;
+        this.packages = data; // This will now be PackageModel[]
+        this.isLoading = false;
       },
       error: (err) => {
-        this.packageError = 'Failed to load packages';
-        this.packageLoading = false;
+        this.error = 'Failed to load packages';
+        this.isLoading = false;
       }
     });
   }
