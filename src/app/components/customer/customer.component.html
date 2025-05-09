@@ -4,7 +4,7 @@
   <input 
     type="text" 
     placeholder="Search customers..." 
-    [(ngModel)]="searchTerm"
+    [formControl]="searchControl"
     class="search-input"
   />
   <button class="reset-btn" (click)="resetFilters()">Reset</button>

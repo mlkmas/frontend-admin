@@ -6,7 +6,7 @@ import { PartnerDetails } from '../models/partner-details.model';
 import { SystemStatistics } from '../models/statistics.model';
 import { map } from 'rxjs/operators';
 
-import { Package, Question, Product, PackageModel } from '../models/package.model'; // This should now work
+import { Package, Question, Product, PackageModel } from '../models/package.model'; 
 @Injectable({
   providedIn: 'root'
 })

@@ -8,11 +8,14 @@ import { DefaultImgDirective } from '../../directives/default-img.directive';
 import { PartnerDetailsComponent } from './../partner-details/partner-details.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-partner',
   standalone: true,
-  imports: [CommonModule, RouterModule, DefaultImgDirective,MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule, DefaultImgDirective,MatIconModule],
   templateUrl: './partner.component.html',
   styleUrls: ['./partner.component.css']
 })
@@ -22,11 +25,18 @@ export class PartnerComponent implements OnInit {
   errorMessage: string | null = null;
   defaultImage: string = 'assets/defaultImg.jpg';
   actionInProgress: string | null = null;
-  
+  searchControl = new FormControl('');
+  originalPartners: Partner[] = [];
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(private partnersService: PartnersService ,private dialog: MatDialog) {}
 
   ngOnInit() {
     this.getAllPartners();
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(() => this.applyFilters());
   }
 
   getAllPartners() {
@@ -41,6 +51,8 @@ export class PartnerComponent implements OnInit {
           email: partner.email || 'No Email',
           phoneNumber: partner.phoneNumber || 'No Phone'
         }));
+        this.originalPartners = [...this.partners];
+        this.applyFilters();
         this.isLoading = false;
       },
       error: (error) => {
@@ -102,4 +114,51 @@ export class PartnerComponent implements OnInit {
       
     });
   }
+
+  
+  applyFilters(): void {
+    let filtered = [...this.originalPartners];
+    
+    // Apply search
+    if (this.searchControl.value) {
+      const term = this.searchControl.value.toLowerCase();
+      filtered = filtered.filter(partner =>
+        partner.name.toLowerCase().includes(term) ||
+        partner.email.toLowerCase().includes(term) ||
+        (!partner.isApproved ? 'pending' : partner.isSuspended ? 'suspended' : 'active').includes(term)
+      );
+    }
+
+    // Apply sorting
+    if (this.sortColumn) {
+      filtered = filtered.sort((a, b) => {
+        const aValue = a[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
+        const bValue = b[this.sortColumn as keyof Partner]?.toString().toLowerCase() || '';
+        const compare = aValue.localeCompare(bValue);
+        return this.sortDirection === 'asc' ? compare : -compare;
+      });
+    }
+
+    this.partners = filtered;
+  }
+
+  resetFilters(): void {
+    this.searchControl.setValue('');
+    this.sortColumn = '';
+    this.sortDirection = 'asc';
+    this.partners = [...this.originalPartners];
+  }
+
+  toggleSort(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
+  }
+
+  
+  
 }

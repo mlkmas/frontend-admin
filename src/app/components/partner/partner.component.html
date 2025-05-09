@@ -1,3 +1,18 @@
+<!-- partner.component.html -->
+<div class="partners-controls">
+  <input 
+    type="text" 
+    placeholder="Search partners..." 
+    [formControl]="searchControl"
+    class="search-input"
+  />
+  <button class="reset-btn" (click)="resetFilters()">Reset</button>
+</div>
+
+<div class="partners-grid">
+  <!-- ... existing partner card code ... -->
+</div>
+
 <div class="partners-grid">
   <div *ngFor="let partner of partners" class="partner-card">
     <div class="partner-image">

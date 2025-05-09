@@ -5,11 +5,16 @@ import { Customer, CustomerModel } from '../../models/customer.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+
+
+
 @Component({
   selector: 'app-customer',
   standalone: true,
-  imports: [CommonModule, RouterModule, DefaultImgDirective,FormsModule],
+  imports: [CommonModule, RouterModule, DefaultImgDirective,FormsModule,ReactiveFormsModule],
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.css']
 })
@@ -24,17 +29,25 @@ currentPage: number = 1;
 itemsPerPage: number = 20;
 sortColumn: string = '';
 sortDirection: 'asc' | 'desc' = 'asc';
+searchControl = new FormControl('');
+  originalCustomers: Customer[] = [];
 
 
   constructor(private customersService: CustomersService) {}
 
   ngOnInit() {
     this.getAllCustomers();
+    this.searchControl.valueChanges
+    .pipe(debounceTime(300))
+    .subscribe(() => this.applyFilters());
   }
   getAllCustomers() {
     this.customersService.getAllCustomers().subscribe({
       next: (data: any[]) => {
         this.customers = data.map(CustomerModel.fromJson);  // <— Now uses the class
+        this.originalCustomers = [...this.customers];
+        this.isLoading = false;
+        this.applyFilters(); // Apply initial filters
         this.isLoading = false;
       },
       error: (error) => {
@@ -113,11 +126,44 @@ get totalPages(): number {
 goToPage(page: number) {
   this.currentPage = page;
 }
-resetFilters() {
-  this.searchTerm = '';
+
+
+
+applyFilters(): void {
+  let filtered = [...this.originalCustomers];
+  
+  // Apply search
+  if (this.searchControl.value) {
+    const term = this.searchControl.value.toLowerCase();
+    filtered = filtered.filter(customer =>
+      customer.name.toLowerCase().includes(term) ||
+      customer.email.toLowerCase().includes(term) ||
+      (customer.isSuspended ? 'suspended' : 'active').includes(term)
+    );
+  }
+
+  // Apply sorting
+  if (this.sortColumn) {
+    filtered = filtered.sort((a, b) => {
+      const aValue = a[this.sortColumn as keyof Customer]?.toString().toLowerCase() || '';
+      const bValue = b[this.sortColumn as keyof Customer]?.toString().toLowerCase() || '';
+      const compare = aValue.localeCompare(bValue);
+      return this.sortDirection === 'asc' ? compare : -compare;
+    });
+  }
+
+  // Update pagination
+  this.customers = filtered;
+  this.currentPage = 1; // Reset to first page
+}
+
+resetFilters(): void {
+  this.searchControl.setValue('');
   this.sortColumn = '';
   this.sortDirection = 'asc';
   this.currentPage = 1;
+  this.customers = [...this.originalCustomers];
 }
+
 
 }

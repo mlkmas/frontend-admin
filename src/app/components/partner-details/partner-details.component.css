@@ -85,6 +85,11 @@
   font-size: 1.1rem; /* Make text larger */
   box-sizing: border-box;
 }
+.success-msg {
+  color: green;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
 /* Status Styles */
 .partner-status span {

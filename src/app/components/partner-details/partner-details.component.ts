@@ -16,6 +16,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PartnerDetails } from '../../models/partner-details.model';
 import { Package, Question } from '../../models/package.model';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
+import { MatDialog } from '@angular/material/dialog';
+import { PackageManagementComponent } from '../package-management/package-management.component';
 
 @Component({
   selector: 'app-partner-details',
@@ -51,10 +53,12 @@ export class PartnerDetailsComponent {
   selectedPackage: Package | null = null;
   newQuestionText = '';
   defaultImage: string = 'assets/defaultImg.jpg';
-  
+  questionAdded = false;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { partner: Partner },
-    private partnersService: PartnersService
+    private partnersService: PartnersService,
+    private dialog: MatDialog  // Add this
   ) {
     this.partner = data.partner;
   }
@@ -108,7 +112,7 @@ export class PartnerDetailsComponent {
   
   addQuestion(): void {
     if (!this.selectedPackage || !this.newQuestionText) return;
-    
+  
     const newQuestion: Question = {
       id: this.generateGuid(),
       text: this.newQuestionText,
@@ -116,9 +120,34 @@ export class PartnerDetailsComponent {
       expectedAnswer: '',
       mandatory: true
     };
-    
+  
     this.selectedPackage.questions.push(newQuestion);
-    this.newQuestionText = '';
+  
+    this.partnersService.updatePackageQuestions(
+      this.partner.id,
+      this.selectedPackage.id,
+      this.selectedPackage.questions
+    ).subscribe({
+      next: () => {
+        this.newQuestionText = '';
+        alert('Question added successfully!');
+      },
+      error: () => {
+        alert('Failed to save question. Please try again.');
+      }
+    });
+  }
+  
+  removeQuestion(pkg: Package, id: string): void {
+    pkg.questions = pkg.questions.filter(q => q.id !== id);
+    this.partnersService.updatePackageQuestions(this.partner.id, pkg.id, pkg.questions).subscribe();
+  }
+
+  openPackageManagement(): void {
+    this.dialog.open(PackageManagementComponent, {
+      width: '800px',
+      data: { partnerId: this.partner.id }
+    });
   }
   
   private generateGuid(): string {
