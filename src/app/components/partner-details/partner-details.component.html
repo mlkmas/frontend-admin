@@ -16,9 +16,9 @@
   <div *ngIf="partner" class="partner-content">
     <div class="header-section">
       <div class="profile-header">
-        <img  [appDefaultImg]="partner.photoUrl"
-        [defaultImage]="defaultImage"
-        alt="{{ partner.name }}" 
+        <img [appDefaultImg]="partner.photoUrl"
+             [defaultImage]="defaultImage"
+             alt="{{ partner.name }}" 
              class="profile-image">
         <div class="profile-info">
           <h2>{{ partner.name }}</h2>
@@ -40,13 +40,16 @@
 
     <div class="details-section">
       <div class="detail-row">
-        <mat-icon> email</mat-icon>
+        <mat-icon>email</mat-icon>
         <span class="detail-text">{{ partner.email || 'No email provided' }}</span>
       </div>
 
       <div class="detail-row">
         <mat-icon>phone</mat-icon>
-        <span class="detail-text">{{ partner.phoneNumber || 'No phone provided' }}</span>
+        <span class="detail-text">
+          {{ partner.phoneNumber || 'No phone provided' }}
+          <mat-icon *ngIf="partner.isPhoneVerified === 'VERIFIED'" class="verified-icon">verified</mat-icon>
+        </span>
       </div>
 
       <div class="detail-row">
@@ -86,12 +89,32 @@
 
         <div class="detail-row">
           <mat-icon>call</mat-icon>
-          <span class="detail-text">Preferred Phone: {{ extraDetails.preferredPhoneNumber || 'Not specified' }}</span>
+          <span class="detail-text">
+            Preferred Phone: {{ extraDetails.preferredPhoneNumber || 'Not specified' }}
+            <mat-icon *ngIf="extraDetails.isPhoneVerified === 'VERIFIED'" class="verified-icon">verified</mat-icon>
+          </span>
         </div>
 
         <div *ngIf="extraDetails.locale" class="detail-row">
           <mat-icon>language</mat-icon>
           <span class="detail-text">Locale: {{ extraDetails.locale.displayCountry }}, {{ extraDetails.locale.displayLanguage }}</span>
+        </div>
+
+        <div *ngIf="extraDetails.homeLatitude && extraDetails.homeLongitude" class="detail-row">
+          <mat-icon>home</mat-icon>
+          <span class="detail-text">Home Coordinates: {{ extraDetails.homeLatitude }}, {{ extraDetails.homeLongitude }}</span>
+        </div>
+
+        <div *ngIf="extraDetails.workLatitude && extraDetails.workLongitude" class="detail-row">
+          <mat-icon>work</mat-icon>
+          <span class="detail-text">Work Coordinates: {{ extraDetails.workLatitude }}, {{ extraDetails.workLongitude }}</span>
+        </div>
+
+      
+
+        <div *ngIf="extraDetails.isPhoneVerified !== 'VERIFIED'" class="detail-row">
+          <mat-icon>verified_user</mat-icon>
+          <span class="detail-text">Phone not verified</span>
         </div>
 
         <div *ngIf="extraDetails.regions?.length" class="regions-section">
@@ -108,83 +131,78 @@
         </div>
       </div>
 
-     
-<div class="package-management-section">
-  <button mat-raised-button color="primary" (click)="togglePackageView()" class="toggle-packages-btn">
-    <mat-icon>{{ showPackages ? 'expand_less' : 'expand_more' }}</mat-icon>
-    <span>{{ showPackages ? 'Hide Packages' : 'Show Packages' }}</span>
-  </button>
+      <div class="package-management-section">
+        <button mat-raised-button color="primary" (click)="togglePackageView()" class="toggle-packages-btn">
+          <mat-icon>{{ showPackages ? 'expand_less' : 'expand_more' }}</mat-icon>
+          <span>{{ showPackages ? 'Hide Packages' : 'Show Packages' }}</span>
+        </button>
 
-  <div *ngIf="showPackages" class="packages-content">
-    <div *ngIf="packageLoading" class="loading">
-      <mat-spinner diameter="30"></mat-spinner>
-    </div>
-
-    <div *ngIf="packageError" class="error">
-      {{ packageError }}
-      <button mat-button (click)="loadPackages()">Retry</button>
-    </div>
-
-    <div *ngIf="packages.length > 0">
-      <h3>Packages</h3>
-      <mat-accordion>
-        <mat-expansion-panel *ngFor="let pkg of packages">
-          <mat-expansion-panel-header>
-            <mat-panel-title>{{ pkg.packageName }}</mat-panel-title>
-            <mat-panel-description>
-              {{ pkg.priceDTO.totalPrice | currency:pkg.currency }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-        
-          <div class="package-details">
-            <h4>Questions</h4>
-            <mat-list>
-              <mat-list-item *ngFor="let question of pkg.questions">
-                {{ question.text }}
-                <button mat-icon-button color="warn" (click)="removeQuestion(pkg, question.id)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-list-item>
-            </mat-list>
-        
-            <!-- Toggleable Add Form -->
-            <button mat-stroked-button (click)="selectedPackage === pkg ? selectedPackage = null : selectedPackage = pkg">
-              <mat-icon>add</mat-icon>
-              Add Question
-            </button>
-        
-            <div *ngIf="selectedPackage === pkg" class="add-question-form">
-              <mat-form-field appearance="outline">
-                <mat-label>New Question</mat-label>
-                <input matInput [(ngModel)]="newQuestionText" />
-              </mat-form-field>
-              <button mat-raised-button color="primary" (click)="addQuestion()">Submit</button>
-            </div>
-        
-            <!-- Success Alert -->
-            <div *ngIf="questionAdded" class="success-msg">
-              ✅ Question added successfully!
-            </div>
+        <div *ngIf="showPackages" class="packages-content">
+          <div *ngIf="packageLoading" class="loading">
+            <mat-spinner diameter="30"></mat-spinner>
           </div>
-        </mat-expansion-panel>
-        
-      </mat-accordion>
-    </div>
 
-    <div *ngIf="!packageLoading && packages.length === 0" class="no-packages">
-      No packages found for this partner.
-    </div>
-    <div *ngIf="packages.length > 0" class="package-actions">
-     <!-- Change this: -->
-<button mat-raised-button color="primary" (click)="openPackageManagement()">
-  <mat-icon>settings</mat-icon>
-  Manage Packages
-</button>
-    </div>
+          <div *ngIf="packageError" class="error">
+            {{ packageError }}
+            <button mat-button (click)="loadPackages()">Retry</button>
+          </div>
 
-  </div>
-</div>
+          <div *ngIf="packages.length > 0">
+            <h3>Packages</h3>
+            <mat-accordion>
+              <mat-expansion-panel *ngFor="let pkg of packages">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>{{ pkg.packageName }}</mat-panel-title>
+                  <mat-panel-description>
+                    {{ pkg.priceDTO.totalPrice | currency:pkg.currency }}
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+              
+                <div class="package-details">
+                  <h4>Questions</h4>
+                  <mat-list>
+                    <mat-list-item *ngFor="let question of pkg.questions">
+                      {{ question.text }}
+                      <button mat-icon-button color="warn" (click)="removeQuestion(pkg, question.id)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </mat-list-item>
+                  </mat-list>
+              
+                  <!-- Toggleable Add Form -->
+                  <button mat-stroked-button (click)="selectedPackage === pkg ? selectedPackage = null : selectedPackage = pkg">
+                    <mat-icon>add</mat-icon>
+                    Add Question
+                  </button>
+              
+                  <div *ngIf="selectedPackage === pkg" class="add-question-form">
+                    <mat-form-field appearance="outline">
+                      <mat-label>New Question</mat-label>
+                      <input matInput [(ngModel)]="newQuestionText" />
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="addQuestion()">Submit</button>
+                  </div>
+              
+                  <!-- Success Alert -->
+                  <div *ngIf="questionAdded" class="success-msg">
+                    ✅ Question added successfully!
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
 
+          <div *ngIf="!packageLoading && packages.length === 0" class="no-packages">
+            No packages found for this partner.
+          </div>
+          <div *ngIf="packages.length > 0" class="package-actions">
+            <button mat-raised-button color="primary" (click)="openPackageManagement()">
+              <mat-icon>settings</mat-icon>
+              Manage Packages
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -14,7 +14,17 @@
   padding: 40px;
   text-align: center;
 }
+.user-details-section {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
 
+.user-details-section h4 {
+  margin-top: 0;
+  color: #555;
+}
 .error-state {
   color: #d32f2f;
 }
