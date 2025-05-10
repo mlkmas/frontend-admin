@@ -91,37 +91,47 @@
       </mat-card-content>
     </mat-card>
   </div>
+<!-- New Package Form -->
+<div *ngIf="showNewPackageForm" class="new-package-form">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Create New Package</mat-card-title>
+    </mat-card-header>
 
-  <!-- New Package Form -->
-  <div *ngIf="showNewPackageForm" class="new-package-form">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Create New Package</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
+    <mat-card-content>
+      <form (ngSubmit)="addNewPackage()">
+        <!-- Package Name -->
         <mat-form-field appearance="outline">
           <mat-label>Package Name</mat-label>
-          <input matInput [(ngModel)]="newPackage.packageName" required>
+          <input matInput [(ngModel)]="newPackage.packageName" name="packageName" required>
         </mat-form-field>
 
+        <!-- Currency -->
         <mat-form-field appearance="outline">
           <mat-label>Currency</mat-label>
-          <input matInput [(ngModel)]="newPackage.currency" required>
+          <mat-select [(ngModel)]="newPackage.currency" name="currency" required>
+            <mat-option value="USD">USD</mat-option>
+            <mat-option value="EUR">EUR</mat-option>
+            <mat-option value="GBP">GBP</mat-option>
+          </mat-select>
         </mat-form-field>
 
+        <!-- Service Selection (Required) -->
+       
         <mat-form-field appearance="outline">
-          <mat-label>Select Service</mat-label>
-          <mat-select [(ngModel)]="selectedServiceId" required>
+          <mat-label>Select Service*</mat-label>
+          <mat-select [(ngModel)]="selectedServiceId" name="service" required>
             <mat-option *ngFor="let service of availableServices" [value]="service.id">
               {{ service.name }} ({{ service.price | currency:service.currency }})
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="!selectedServiceId">Service is required</mat-error>
         </mat-form-field>
 
+        <!-- Product Selection (Optional) -->
         <mat-form-field appearance="outline" *ngIf="availableProducts.length > 0">
           <mat-label>Select Product (Optional)</mat-label>
-          <mat-select [(ngModel)]="selectedProductId">
+          <mat-select [(ngModel)]="selectedProductId" name="product">
             <mat-option *ngFor="let product of availableProducts" [value]="product.id">
               {{ product.name }} ({{ product.price | currency:product.currency }})
             </mat-option>
@@ -129,10 +139,17 @@
         </mat-form-field>
 
         <div class="form-actions">
-          <button mat-button (click)="showNewPackageForm = false">Cancel</button>
-          <button mat-raised-button color="primary" (click)="addNewPackage()">Create Package</button>
+          <button mat-button type="button" (click)="showNewPackageForm = false">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Create Package</span>
+            <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+          </button>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      </form>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

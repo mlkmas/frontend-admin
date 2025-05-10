@@ -1,23 +1,85 @@
 /* package-management.component.css */
 .package-management-container {
-    padding: 20px;
-  }
-  
-  .package-list, .package-details, .new-package {
-    margin-bottom: 20px;
-  }
-  
-  table {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .add-question {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
-  }
-  
-  mat-form-field {
-    width: 100%;
-  }
+  padding: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.package-list, .package-details, .new-package {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.add-question {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.new-package-form {
+  order: 1;
+  margin-top: 0;
+  max-height: none;
+}
+
+.selected-package {
+  order: 3;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+.error-message {
+  color: #f44336;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.error {
+  color: #d32f2f;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.question-form {
+  margin-top: 20px;
+}

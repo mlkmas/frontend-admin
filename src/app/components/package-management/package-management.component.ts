@@ -95,17 +95,33 @@ export class PackageManagementComponent implements OnInit {
 
   loadAvailableServices(): void {
     this.isLoading = true;
-    this.partnersService.getAvailableServices().subscribe({
-      next: (data) => {
-        this.availableServices = data.services;
-        this.availableProducts = data.products;
-        this.isLoading = false;
+    this.error = null;
+    
+    this.partnersService.getPartnerExtraDetails(this.data.partnerId).subscribe({
+      next: (extra) => {
+        const regionDTOs = extra?.regions || [];
+
+    
+        this.partnersService.getAvailableServices(regionDTOs).subscribe({
+          next: (data) => {
+            this.availableServices = data.services || [];
+            this.availableProducts = data.products || [];
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.error = 'Failed to load services: ' + err.message;
+            this.isLoading = false;
+            this.availableServices = [];
+            this.availableProducts = [];
+          }
+        });
       },
       error: (err) => {
-        this.error = 'Failed to load available services';
+        this.error = 'Failed to load partner details: ' + err.message;
         this.isLoading = false;
       }
     });
+    
   }
 
   selectPackage(pkg: Package): void {
@@ -138,24 +154,6 @@ export class PackageManagementComponent implements OnInit {
     this.saveQuestions();
   }
 
-  saveQuestions(): void {
-    if (!this.selectedPackage) return;
-    
-    this.isLoading = true;
-    this.partnersService.updatePackageQuestions(
-      this.data.partnerId,
-      this.selectedPackage.id,
-      this.selectedPackage.questions
-    ).subscribe({
-      next: () => {
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to save questions';
-        this.isLoading = false;
-      }
-    });
-  }
 
   showCreatePackageForm(): void {
     this.newPackage = {
@@ -171,40 +169,46 @@ export class PackageManagementComponent implements OnInit {
     this.selectedProductId = null;
     this.showNewPackageForm = true;
   }
-
   addNewPackage(): void {
-    if (!this.newPackage.packageName || !this.selectedServiceId) {
-      this.error = 'Package name and service are required';
+    // Validate required fields
+    if (!this.newPackage.packageName) {
+      this.error = 'Package name is required';
       return;
     }
-
-    // Find selected service and product
-    const selectedService = this.availableServices.find(s => s.id === this.selectedServiceId);
-    const selectedProduct = this.selectedProductId 
-      ? this.availableProducts.find(p => p.id === this.selectedProductId)
-      : null;
-
-    if (!selectedService) {
+    
+    if (!this.selectedServiceId) {
       this.error = 'Please select a service';
       return;
     }
-
+  
+    // Find selected service and product
+    const selectedService = this.availableServices.find(s => s.id === this.selectedServiceId);
+    if (!selectedService) {
+      this.error = 'Invalid service selected';
+      return;
+    }
+  
+    const selectedProduct = this.selectedProductId 
+      ? this.availableProducts.find(p => p.id === this.selectedProductId)
+      : null;
+  
     this.isLoading = true;
     
+    // Create package using PackageModel
     const packageToAdd = new PackageModel(
       this.generateGuid(),
-      '', // vat
-      '', // country
-      '', // countryCode
-      '', // city
+      '',
+      '',
+      '',
+      '',
       this.newPackage.packageName || '',
       this.newPackage.currency || 'USD',
-      {}, // extraDetails
-      selectedService ? [selectedService] : [],
+      {},
+      [selectedService],
       selectedProduct ? [selectedProduct] : [],
-      [], // questions
-      [], // regionDTOs
-      { // priceDTO
+      [],
+      [],
+      {
         netPrice: 0,
         totalPrice: 0,
         price: 0,
@@ -213,36 +217,100 @@ export class PackageManagementComponent implements OnInit {
         systemProfitPercentage: 0,
         salePercentage: 0
       },
-      this.newPackage.active || true
+      true
     );
+  
+    this.partnersService.getPartnerExtraDetails(this.data.partnerId).subscribe({
+      next: (extra) => {
+        const regions = extra?.regions ?? [];
+    
+        const packageToAdd = new PackageModel(
+          this.generateGuid(),
+          '',
+          '',
+          '',
+          '',
+          this.newPackage.packageName || '',
+          this.newPackage.currency || 'USD',
+          {},
+          [selectedService],
+          selectedProduct ? [selectedProduct] : [],
+          [], // questions
+          regions, // ✅ Pass regions here
+          {
+            netPrice: 0,
+            totalPrice: 0,
+            price: 0,
+            salePrice: 0,
+            vat: 0,
+            systemProfitPercentage: 0,
+            salePercentage: 0
+          },
+          true
+        );
+    
+        this.partnersService.addPartnerPackage(this.data.partnerId, packageToAdd.toJson())
+        .subscribe({
+          next: () => {
+            this.loadPackages();
+            this.showNewPackageForm = false;
+            this.isLoading = false;
+            this.error = null;
+          },
+          error: (err) => {
+            this.error = 'Failed to add package: ' + (err.error?.message || err.message);
+            this.isLoading = false;
+          }
+        });
+        
+      },
+      error: (err) => {
+        this.error = 'Failed to load partner region: ' + err.message;
+        this.isLoading = false;
+      }
+    });
+    
+  }
 
-    this.partnersService.addPartnerPackage(this.data.partnerId, packageToAdd.toJson())
-      .subscribe({
-        next: () => {
-          this.loadPackages();
-          this.showNewPackageForm = false;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.error = 'Failed to add package';
-          this.isLoading = false;
-        }
-      });
+  saveQuestions(): void {
+    if (!this.selectedPackage) return;
+    
+    this.isLoading = true;
+    this.error = null;
+    
+    this.partnersService.updatePackageQuestions(
+      this.data.partnerId,
+      this.selectedPackage.id,
+      this.selectedPackage.questions
+    ).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.loadPackages();
+      },
+      error: (err) => {
+        this.error = 'Failed to save questions: ' + err.message;
+        this.isLoading = false;
+      }
+    });
   }
 
   removePackage(packageId: string): void {
+    if (!confirm('Are you sure you want to delete this package?')) return;
+    
     this.isLoading = true;
+    this.error = null;
+    
     this.partnersService.removePackage(this.data.partnerId, packageId)
       .subscribe({
         next: () => {
-          this.loadPackages();
+          this.packages = this.packages.filter(p => p.id !== packageId);
           if (this.selectedPackage?.id === packageId) {
             this.selectedPackage = null;
           }
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = 'Failed to remove package';
+          this.error = 'Failed to remove package: ' + err.message;
           this.isLoading = false;
         }
       });

@@ -11,17 +11,17 @@ import { Package, Question, Product, PackageModel } from '../models/package.mode
   providedIn: 'root'
 })
 export class PartnersService {
-  private baseUrl = '/api/administrator/getAllPartners'; 
+  private basePartnersUrl = '/api/administrator/getAllPartners'; 
 private approveUrl = '/api/administrator/approveUser'; 
 private suspendUrl = '/api/administrator/suspendUser';
   private partnerDetailsUrl = '/api/administrator/getPartnerExtraDetails'; 
   private statisticUrl = '/api/administrator/statistics/systemStatistics';
   private packagesUrl = '/api/administrator/getPartnerPackages';
   private addPackageUrl = '/api/administrator/addPartnerPackage';
-  private updateQuestionsUrl = '/api/administrator/Packages/questions/update';
-  private removePackageUrl = '/api/administrator/removePackage';
+  private updateQuestionsUrl = '/api/administrator/packages/questions/update';
+  private removePackageUrl = '/api/administrator/removePartnerPackage';
  private pkgServicesUrl = '/api/administrator/store/services/get'
-
+ private baseUrl = '/api/administrator';
   constructor(private http: HttpClient) {}
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
@@ -29,7 +29,7 @@ private suspendUrl = '/api/administrator/suspendUser';
   }
 
   getAllPartners(): Observable<Partner[]> {
-    return this.http.post<Partner[]>(this.baseUrl,{});
+    return this.http.post<Partner[]>(this.basePartnersUrl,{});
   }
 
   getPartnerDetails(partnerId: string): Observable<PartnerDetails> {
@@ -82,39 +82,39 @@ private suspendUrl = '/api/administrator/suspendUser';
       map(packages => packages.map(pkg => PackageModel.fromJson(pkg)))
     );
   }
-  
-
-  addPartnerPackage(partnerId: string, pkg: PackageModel): Observable<any> {
-    const params = new HttpParams().set('partnerId', partnerId);
-    return this.http.post(this.addPackageUrl, pkg.toJson(), { params });
+  getAvailableServices(regionDTOs: any[]): Observable<{ services: Product[], products: Product[] }> {
+    return this.http.post<{ services: Product[], products: Product[] }>(
+      this.pkgServicesUrl, 
+      regionDTOs
+    ).pipe(catchError(this.handleError));
   }
+  
 
   updatePackageQuestions(partnerId: string, packageId: string, questions: Question[]): Observable<any> {
     const params = new HttpParams()
       .set('partnerId', partnerId)
       .set('packageId', packageId);
 
-    return this.http.post<any>(this.updateQuestionsUrl, questions, { params });
+    return this.http.post(
+      this.updateQuestionsUrl, 
+      questions,
+      { params }
+    ).pipe(catchError(this.handleError));
   }
+
   removePackage(partnerId: string, packageId: string): Observable<any> {
     const params = new HttpParams()
       .set('partnerId', partnerId)
-      .set('packagedId', packageId);
+      .set('packageId', packageId);
 
-    return this.http.post<any>(this.removePackageUrl, {}, { params });
+      return this.http.post(this.removePackageUrl, {}, { params })
+      .pipe(catchError(this.handleError));
   }
 
-  getAvailableServices(): Observable<{ services: Product[], products: Product[] }> {
-    // This endpoint looks like it expects location-based payload.
-    const body = [{
-      id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-      countryCode: 'string',
-      country: 'string',
-      city: 'string'
-    }];
-    return this.http.post<{ services: Product[], products: Product[] }>(this.pkgServicesUrl, body);
-  }
-
-
+// Keep only the service method for adding a package
+addPartnerPackage(partnerId: string, pkg: any): Observable<any> {
+  const params = new HttpParams().set('partnerId', partnerId);
+  return this.http.post(this.addPackageUrl, pkg, { params });
+}
 
 }
