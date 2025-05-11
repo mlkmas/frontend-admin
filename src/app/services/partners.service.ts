@@ -26,9 +26,9 @@ private suspendUrl = '/api/administrator/suspendUser';
   constructor(private http: HttpClient) {}
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
-    return throwError(() => new Error('Something went wrong; please try again later.'));
+    // Return the actual error message from the server if available
+    return throwError(() => new Error(error.error?.message || 'Something went wrong; please try again later.'));
   }
-
   getAllPartners(): Observable<Partner[]> {
     return this.http.post<Partner[]>(this.basePartnersUrl,{});
   }
@@ -104,9 +104,15 @@ private suspendUrl = '/api/administrator/suspendUser';
     const params = new HttpParams()
       .set('partnerId', partnerId)
       .set('packageId', packageId);
-
-      return this.http.post(this.removePackageUrl,{}, { params })
-      .pipe(catchError(this.handleError));
+  
+    // Send an empty object as the body since the API expects a POST with query params
+    return this.http.post(this.removePackageUrl, {}, { params })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error removing package:', error);
+          return throwError(() => new Error(error.error?.message || 'Failed to remove package'));
+        })
+      );
   }
 
 // Keep only the service method for adding a package

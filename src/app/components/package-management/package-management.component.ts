@@ -320,7 +320,6 @@ export class PackageManagementComponent implements OnInit {
       }
     });
   }
-  
   removePackage(packageId: string): void {
     if (!confirm('Are you sure you want to delete this package?')) return;
     
@@ -337,8 +336,10 @@ export class PackageManagementComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = 'Failed to remove package: ' + err.message;
+          this.error = err.message;
           this.isLoading = false;
+          // Optional: reload packages to sync with server
+          this.loadPackages();
         }
       });
   }
