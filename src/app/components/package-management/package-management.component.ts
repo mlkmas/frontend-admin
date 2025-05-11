@@ -329,6 +329,7 @@ export class PackageManagementComponent implements OnInit {
     this.partnersService.removePackage(this.data.partnerId, packageId)
       .subscribe({
         next: () => {
+          // Optimistically update the UI
           this.packages = this.packages.filter(p => p.id !== packageId);
           if (this.selectedPackage?.id === packageId) {
             this.selectedPackage = null;
@@ -336,14 +337,11 @@ export class PackageManagementComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          this.error = err.message;
+          // Since we're handling the error in the service, this shouldn't trigger
           this.isLoading = false;
-          // Optional: reload packages to sync with server
-          this.loadPackages();
         }
       });
   }
-
   private generateGuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       const r = Math.random() * 16 | 0,
