@@ -142,11 +142,21 @@ export class PackageManagementComponent implements OnInit {
 
   addQuestion(): void {
     if (!this.selectedPackage || !this.newQuestion.text) return;
-    
-    this.selectedPackage.questions.push({...this.newQuestion});
+  
+    // Create a new question object without ID (let backend generate it)
+    const questionToAdd: Question = {
+      text: this.newQuestion.text,
+      type: 0,
+      expectedAnswer: '',
+      mandatory: true
+    };
+  
+    this.selectedPackage.questions.push(questionToAdd);
     this.saveQuestions();
     this.showQuestionForm = false;
   }
+  
+  
 
   removeQuestion(questionId: string): void {
     if (!this.selectedPackage) return;
@@ -236,7 +246,7 @@ export class PackageManagementComponent implements OnInit {
           [selectedService],
           selectedProduct ? [selectedProduct] : [],
           [], // questions
-          regions, // ✅ Pass regions here
+          regions, // 
           {
             netPrice: 0,
             totalPrice: 0,
@@ -278,22 +288,39 @@ export class PackageManagementComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
     
+    // Create a clean array of questions without any undefined/null values
+    const questionsToSend = this.selectedPackage.questions.map(q => ({
+      text: q.text || '',          // Ensure text is never null/undefined
+      type: q.type || 0,           // Default to type 0 if not specified
+      expectedAnswer: q.expectedAnswer || '',
+      mandatory: q.mandatory !== false // Default to true if not specified
+    }));
+  
+    // Filter out empty questions if needed
+    const validQuestions = questionsToSend.filter(q => q.text.trim().length > 0);
+  
     this.partnersService.updatePackageQuestions(
       this.data.partnerId,
       this.selectedPackage.id,
-      this.selectedPackage.questions
+      validQuestions
     ).subscribe({
       next: () => {
         this.isLoading = false;
-        this.loadPackages();
+        this.loadPackages(); // Refresh the list
+        this.showQuestionForm = false; // Hide the form on success
       },
       error: (err) => {
-        this.error = 'Failed to save questions: ' + err.message;
         this.isLoading = false;
+        this.error = 'Failed to save questions: ' + 
+          (err.error?.message || err.message || 'Unknown error');
+        
+        // Optional: maintain a local copy of previous state to revert to
+        // instead of just popping the last question
+        console.error('Question update failed:', err);
       }
     });
   }
-
+  
   removePackage(packageId: string): void {
     if (!confirm('Are you sure you want to delete this package?')) return;
     

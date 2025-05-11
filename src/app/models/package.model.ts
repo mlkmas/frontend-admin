@@ -31,7 +31,7 @@ export interface Package {
   }
   
   export interface Question {
-    id: string;
+    id?: string;
     text: string;
     type: number; // 0 = Text, 1 = Multiple Choice, etc.
     expectedAnswer: string;

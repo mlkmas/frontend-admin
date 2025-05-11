@@ -64,7 +64,7 @@
         <mat-list>
           <mat-list-item *ngFor="let question of selectedPackage.questions">
             {{ question.text }}
-            <button mat-icon-button color="warn" (click)="removeQuestion(question.id)">
+            <button mat-icon-button color="warn" (click)="removeQuestion(question.id!)">
               <mat-icon>delete</mat-icon>
             </button>
           </mat-list-item>

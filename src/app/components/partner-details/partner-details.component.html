@@ -110,8 +110,6 @@
           <span class="detail-text">Work Coordinates: {{ extraDetails.workLatitude }}, {{ extraDetails.workLongitude }}</span>
         </div>
 
-      
-
         <div *ngIf="extraDetails.isPhoneVerified !== 'VERIFIED'" class="detail-row">
           <mat-icon>verified_user</mat-icon>
           <span class="detail-text">Phone not verified</span>
@@ -163,43 +161,57 @@
                   <mat-list>
                     <mat-list-item *ngFor="let question of pkg.questions">
                       {{ question.text }}
-                      <button mat-icon-button color="warn" (click)="removeQuestion(pkg, question.id)">
+                      <button mat-icon-button color="warn" (click)="removeQuestion(pkg, question.id!)">
                         <mat-icon>delete</mat-icon>
                       </button>
                     </mat-list-item>
                   </mat-list>
               
-                  <!-- Toggleable Add Form -->
                   <button mat-stroked-button (click)="selectedPackage === pkg ? selectedPackage = null : selectedPackage = pkg">
                     <mat-icon>add</mat-icon>
                     Add Question
                   </button>
-              
+
                   <div *ngIf="selectedPackage === pkg" class="add-question-form">
-                    <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline" class="full-width">
                       <mat-label>New Question</mat-label>
-                      <input matInput [(ngModel)]="newQuestionText" />
+                      <input matInput [(ngModel)]="newQuestionText" required>
                     </mat-form-field>
-                    <button mat-raised-button color="primary" (click)="addQuestion()">Submit</button>
+                    
+                    <div class="form-actions">
+                      <button mat-raised-button 
+                              color="primary" 
+                              (click)="addQuestion()"
+                              [disabled]="!newQuestionText.trim() || packageLoading">
+                        <span *ngIf="!packageLoading">Add Question</span>
+                        <mat-spinner *ngIf="packageLoading" diameter="20"></mat-spinner>
+                      </button>
+                    </div>
                   </div>
-              
-                  <!-- Success Alert -->
-                  <div *ngIf="questionAdded" class="success-msg">
-                    ✅ Question added successfully!
-                  </div>
+
+                  <mat-card *ngIf="questionAdded" class="success-message">
+                    <mat-icon>check_circle</mat-icon>
+                    Question added successfully!
+                  </mat-card>
+
+                  <mat-card *ngIf="packageError" class="error-message">
+                    <mat-icon>error</mat-icon>
+                    {{ packageError }}
+                  </mat-card>
                 </div>
               </mat-expansion-panel>
             </mat-accordion>
+
+            <div class="package-actions">
+              <button mat-raised-button color="primary" (click)="openPackageManagement()">
+                <mat-icon>settings</mat-icon>
+                Manage Packages
+              </button>
+            </div>
           </div>
 
           <div *ngIf="!packageLoading && packages.length === 0" class="no-packages">
             No packages found for this partner.
-          </div>
-          <div *ngIf="packages.length > 0" class="package-actions">
-            <button mat-raised-button color="primary" (click)="openPackageManagement()">
-              <mat-icon>settings</mat-icon>
-              Manage Packages
-            </button>
           </div>
         </div>
       </div>

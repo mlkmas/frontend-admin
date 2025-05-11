@@ -18,7 +18,7 @@ import { Package, Question } from '../../models/package.model';
 import { DefaultImgDirective } from '../../directives/default-img.directive';
 import { MatDialog } from '@angular/material/dialog';
 import { PackageManagementComponent } from '../package-management/package-management.component';
-
+import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-partner-details',
   standalone: true,
@@ -34,7 +34,8 @@ import { PackageManagementComponent } from '../package-management/package-manage
     MatListModule,
     MatFormFieldModule,
     MatInputModule, 
-    DefaultImgDirective
+    DefaultImgDirective,
+    MatCardModule
   ],
   templateUrl: './partner-details.component.html',
   styleUrls: ['./partner-details.component.css']
@@ -109,39 +110,65 @@ export class PartnerDetailsComponent {
       this.loadPackages();
     }
   }
-  
-  addQuestion(): void {
-    if (!this.selectedPackage || !this.newQuestionText) return;
-  
-    const newQuestion: Question = {
-      id: this.generateGuid(),
-      text: this.newQuestionText,
-      type: 0,
-      expectedAnswer: '',
-      mandatory: true
-    };
-  
-    this.selectedPackage.questions.push(newQuestion);
-  
-    this.partnersService.updatePackageQuestions(
-      this.partner.id,
-      this.selectedPackage.id,
-      this.selectedPackage.questions
-    ).subscribe({
-      next: () => {
-        this.newQuestionText = '';
-        alert('Question added successfully!');
-      },
-      error: () => {
-        alert('Failed to save question. Please try again.');
-      }
-    });
+
+// Replace the existing addQuestion method with this
+addQuestion(): void {
+  if (!this.selectedPackage || !this.newQuestionText.trim()) {
+    this.packageError = 'Please enter a valid question';
+    return;
   }
-  
-  removeQuestion(pkg: Package, id: string): void {
-    pkg.questions = pkg.questions.filter(q => q.id !== id);
-    this.partnersService.updatePackageQuestions(this.partner.id, pkg.id, pkg.questions).subscribe();
-  }
+
+  const questionToAdd: Question = {
+    text: this.newQuestionText.trim(),
+    type: 0,
+    expectedAnswer: '',
+    mandatory: true
+  };
+
+  this.selectedPackage.questions.push(questionToAdd);
+  this.saveQuestions();
+  this.newQuestionText = '';
+}
+
+// Replace the existing saveQuestions method with this
+private saveQuestions(): void {
+  if (!this.selectedPackage) return;
+
+  this.packageLoading = true;
+  this.packageError = null;
+
+  const questionsToSend = this.selectedPackage.questions.map(q => ({
+    text: q.text,
+    type: q.type,
+    expectedAnswer: q.expectedAnswer,
+    mandatory: q.mandatory
+  }));
+
+  this.partnersService.updatePackageQuestions(
+    this.partner.id,
+    this.selectedPackage.id,
+    questionsToSend
+  ).subscribe({
+    next: () => {
+      this.packageLoading = false;
+      this.questionAdded = true;
+      setTimeout(() => this.questionAdded = false, 3000);
+    },
+    error: (err) => {
+      this.packageLoading = false;
+      this.packageError = 'Failed to save questions: ' + (err.error?.message || err.message);
+    }
+  });
+}
+
+// Replace the existing removeQuestion method with this
+removeQuestion(pkg: Package, questionId: string): void {
+  if (!confirm('Are you sure you want to remove this question?')) return;
+
+  pkg.questions = pkg.questions.filter(q => q.id !== questionId);
+  this.saveQuestions();
+}
+
 
   openPackageManagement(): void {
     this.dialog.open(PackageManagementComponent, {

@@ -18,7 +18,8 @@ private suspendUrl = '/api/administrator/suspendUser';
   private statisticUrl = '/api/administrator/statistics/systemStatistics';
   private packagesUrl = '/api/administrator/getPartnerPackages';
   private addPackageUrl = '/api/administrator/addPartnerPackage';
-  private updateQuestionsUrl = '/api/administrator/packages/questions/update';
+  private updateQuestionsUrl = '/api/administrator/package/questions/update';
+
   private removePackageUrl = '/api/administrator/removePartnerPackage';
  private pkgServicesUrl = '/api/administrator/store/services/get'
  private baseUrl = '/api/administrator';
@@ -95,11 +96,8 @@ private suspendUrl = '/api/administrator/suspendUser';
       .set('partnerId', partnerId)
       .set('packageId', packageId);
 
-    return this.http.post(
-      this.updateQuestionsUrl, 
-      questions,
-      { params }
-    ).pipe(catchError(this.handleError));
+      return this.http.post(this.updateQuestionsUrl, questions, { params }).pipe(catchError(this.handleError));
+
   }
 
   removePackage(partnerId: string, packageId: string): Observable<any> {
@@ -107,7 +105,7 @@ private suspendUrl = '/api/administrator/suspendUser';
       .set('partnerId', partnerId)
       .set('packageId', packageId);
 
-      return this.http.post(this.removePackageUrl, {}, { params })
+      return this.http.post(this.removePackageUrl,{}, { params })
       .pipe(catchError(this.handleError));
   }
 
